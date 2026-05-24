@@ -577,24 +577,24 @@ SGEEOF
 #                              MAIN
 # =============================================================================
 
-# ---- Validate START_STEP ----
+# ---- Create output directory structure (needed before logging) ----
+ABS_OUTPUT_DIR="$(mkdir -p "${OUTPUT_DIR}" && realpath "${OUTPUT_DIR}")"
+mkdir -p "${ABS_OUTPUT_DIR}/logs"
+
+# ---- Log file + function (MUST be defined before any log() call) ----
+SCRIPT_LOG="${ABS_OUTPUT_DIR}/02_equilibrate_bstates.log"
+> "${SCRIPT_LOG}"
+log() {
+    echo "$@" | tee -a "${SCRIPT_LOG}"
+}
+
+# ---- Validate START_STEP (now that log() exists) ----
 START_IDX=$(get_step_index "${START_STEP}")
 if [ "${START_IDX}" -eq -1 ]; then
     log "ERROR: Invalid START_STEP '${START_STEP}'"
     log "Valid options: ${ALL_STEPS[*]}"
     exit 1
 fi
-
-# ---- Create output directory structure ----
-ABS_OUTPUT_DIR="$(mkdir -p "${OUTPUT_DIR}" && realpath "${OUTPUT_DIR}")"
-mkdir -p "${ABS_OUTPUT_DIR}/logs"
-
-# ---- Log file ----
-SCRIPT_LOG="${ABS_OUTPUT_DIR}/02_equilibrate_bstates.log"
-> "${SCRIPT_LOG}"
-log() {
-    echo "$@" | tee -a "${SCRIPT_LOG}"
-}
 
 log ""
 log "============================================================"
@@ -815,7 +815,7 @@ echo "[\$(date)] Extracting final structure for \${BSTATE_ID} -> struct_\${STRUC
 cd \${STRUCT_DIR}
 
 # ---- Extract last frame from md4 as .ncrst, .rst, .rst7, and .pdb ----
-ccat > extract.cpptraj << CPPTRAJ_EOF
+cat > extract.cpptraj << CPPTRAJ_EOF
 parm \${PRMTOP}
 trajin \${WORKDIR}/md4.nc lastframe
 trajout struct.ncrst ncrestart
@@ -834,14 +834,14 @@ cpptraj -i extract.cpptraj > extract.log 2>&1
 STATUS=\$?
 
 if [ \${STATUS} -ne 0 ]; then
-    log "ERROR: cpptraj extraction failed. Check \${STRUCT_DIR}/extract.log"
+    echo "ERROR: cpptraj extraction failed. Check \${STRUCT_DIR}/extract.log"
     exit \${STATUS}
 fi
 
 # ---- Also copy the topology for reference ----
 cp \${PRMTOP} \${STRUCT_DIR}/struct.prmtop
 
-log "[\$(date)] Done: \${STRUCT_DIR}/"
+echo "[\$(date)] Done: \${STRUCT_DIR}/"
 ls -la \${STRUCT_DIR}/struct.*
 exit 0
 SGEEOF
