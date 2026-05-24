@@ -1,0 +1,25 @@
+parm /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_stripped.prmtop
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 231244 231244
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 233326 233326
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 291161 291161
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 298246 298246
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 429258 429258
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 642417 642417
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 771858 771858
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 819176 819176
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 909570 909570
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/unfolded/production_retake/2KOCUnfolded_HRM_production.nc 976646 976646
+autoimage :1-14
+strip !:1-14
+outtraj 00_bstate_pdbs/unfolded/unfolded_01_frame231244.pdb onlyframes 1 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_02_frame233326.pdb onlyframes 2 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_03_frame291161.pdb onlyframes 3 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_04_frame298246.pdb onlyframes 4 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_05_frame429258.pdb onlyframes 5 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_06_frame642417.pdb onlyframes 6 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_07_frame771858.pdb onlyframes 7 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_08_frame819176.pdb onlyframes 8 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_09_frame909570.pdb onlyframes 9 pdb
+outtraj 00_bstate_pdbs/unfolded/unfolded_10_frame976646.pdb onlyframes 10 pdb
+run
+quit
