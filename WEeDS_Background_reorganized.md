@@ -31,39 +31,39 @@ header-includes:
 
 ## Table of Contents
 
--   [0. Abstract](#0-abstract)
--   [1. Program Statement and Scope](#1-program-statement-and-scope)
--   [2. Theoretical Foundations](#2-theoretical-foundations)
--   2.1 The free energy surface and why it is hard to compute
--   2.2 Molecular dynamics as a stochastic process
--   2.3 The transfer operator and its spectrum
--   2.4 Metastability and the timescale gap
--   2.5 The VAMP variational principle and the Galerkin viewpoint
--   2.5.1 Estimator equivalence and complementarity (DR-DMD, kEDMD, VAMPnet)
--   2.6 The density-relaxation expansion
--   2.6.1 The amplitude--temporal--spatial decomposition
--   2.6a The density ratio as a natural observable of the Koopman operator
--   2.6b Noise structure of the density-ratio estimator
--   [3. Pipeline Architecture](#3-pipeline-architecture)
--   3.1 Overview and data flow
--   3.2 Walker weight types and their roles
--   3.3 The two RiteWeight configurations
--   [4. Stage 1 --- Weighted Ensemble Sampling (WESTPA)](#4-stage-1--weighted-ensemble-sampling-westpa)
--   4.1 The weighted-ensemble strategy
--   4.2 Resampling rules and probability conservation
--   4.3 The WE corpus as an importance-weighted sample
--   4.4 The non-equilibrium history of individual walkers
--   4.5 Equilibrium WE and the WEED driver
--   4.6 Progress-coordinate choice and bidirectional seeding
--   4.7 Progress-coordinate independence and its structural limits
--   4.8 What WESTPA produces
--   4.9 Mode excitation, precisely
--   4.10 Coverage of supp(pi) versus barrier crossings
--   4.11 The coverage--excitation tradeoff and bidirectional seeding
--   4.12 Identifiability conditions and the window of observability
--   4.13 Pooling multiple WE runs
--   4.14 Destructive interference in pooling
--   4.15 Operational recommendations
+- [0. Abstract](#0-abstract)
+- [1. Methodological Statement and Scope](#1-methodological-statement-and-scope)
+- [2. Theoretical Foundations](#2-theoretical-foundations)
+  - 2.1 The free energy surface and why it is hard to compute
+  - 2.2 Molecular dynamics as a stochastic process
+  - 2.3 The transfer operator and its spectrum
+  - 2.4 Metastability and the timescale gap
+  - 2.5 The VAMP variational principle and the Galerkin viewpoint
+    - 2.5.1 Estimator equivalence and complementarity (DR-DMD, kEDMD, VAMPnet)
+  - 2.6 The density-relaxation expansion
+    - 2.6.1 The amplitude--temporal--spatial decomposition
+  - 2.6a The density ratio as a natural observable of the Koopman operator
+  - 2.6b Noise structure of the density-ratio estimator
+- [3. Pipeline Architecture](#3-pipeline-architecture)
+  - 3.1 Overview and data flow
+  - 3.2 Walker weight types and their roles
+  - 3.3 The two RiteWeight configurations
+- [4. Stage 1 --- Weighted Ensemble Sampling (WESTPA)](#4-stage-1--weighted-ensemble-sampling-westpa)
+  - 4.1 The weighted-ensemble strategy
+  - 4.2 Resampling rules and probability conservation
+  - 4.3 The WE corpus as an importance-weighted sample
+  - 4.4 The non-equilibrium history of individual walkers
+  - 4.5 Equilibrium WE and the WEED driver
+  - 4.6 Progress-coordinate choice and bidirectional seeding
+  - 4.7 Progress-coordinate independence and its structural limits
+  - 4.8 What WESTPA produces
+  - 4.9 Mode excitation, precisely
+  - 4.10 Coverage of supp(pi) versus barrier crossings
+  - 4.11 The coverage--excitation tradeoff and bidirectional seeding
+  - 4.12 Identifiability conditions and the window of observability
+  - 4.13 Pooling multiple WE runs
+  - 4.14 Destructive interference in pooling
+  - 4.15 Operational recommendations
 
 > **Scope and cross-references.** This is the self-contained *Background* document for the WEeDS pipeline; it covers the theoretical foundations, the pipeline architecture, and the weighted-ensemble sampling stage, including the bidirectional-seeding and pooling analysis. References in the text to downstream pipeline stages denote stages developed in full in the **companion Pipeline document**.
 
