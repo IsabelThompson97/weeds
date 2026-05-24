@@ -1,16 +1,17 @@
 ---
+fontsize: 10pt
 output:
- pdf_document:
- keep_tex: true
- latex_engine: lualatex
- extra_dependencies: ["mathtools", "amsmath", "amssymb"]
+  pdf_document:
+    keep_tex: true
+    latex_engine: lualatex
+    extra_dependencies: ["mathtools", "amsmath", "amssymb"]
 monofont: "Menlo"
 ---
 
 # WEeDS Background — Reorganization & Verification Report
 
 **Subject document:** `WEeDS_Background_reorganized.md` (reorganized from `052326_WE_BidirectionalSeedingBackground.md`)
-**Scope of this report:** (1) what was reorganized and where content moved; (2) independent verification of every worked calculation and the principal derivations; (3) assessment of statistical validity; (4) a complete catalog of internal-consistency and cross-reference issues, with an old $\to$ new section map. No prose, equations, or notation in the manuscript were altered for *content* — only structure, ordering, headings, the Table of Contents, and an orientation note were changed. Substantive errors are reported here rather than silently patched, per the agreed workflow.
+**Scope of this report:** (1) what was reorganized and where content moved; (2) independent verification of every worked calculation and the principal derivations; (3) assessment of statistical validity; (4) a complete catalog of internal-consistency and cross-reference issues, with an old $\to$ new section map. The first reorganization round altered only structure, ordering, headings, the Table of Contents, and an orientation note. A subsequent round — documented in §6 — additionally expanded the weighted-ensemble methodology section, added inline citations and a reference list, standardized load-bearing notation, split long paragraphs, converted one extensive inline expression to display math, and removed in-text section-number cross-references at the author's request. Substantive errors found during verification are reported here rather than silently patched, per the agreed workflow.
 
 ---
 
@@ -163,4 +164,25 @@ Use the map in §1.1 above to update these. An orientation note was added after 
 
 ## 5. Bottom line
 
-The mathematics is sound: every worked example checks out exactly, and the principal derivations (similarity transform, density-relaxation expansion, KL/Lyapunov expansion, KDE-noise and $\sqrt\pi$-weighting, pooling SNR and break-even, Prony bound, resampling unbiasedness) are correct. The statistical design is coherent and its main risk (destructive pooling interference, and its interaction with the run-axis bootstrap) is correctly identified and now carries explicit caveats. The outstanding items are reference/labeling consistency (I1–I7), the most consequential being the abstract's summation index (I1), the two-vs-three weight-type count (I2), the RevVAMPnet §15/§19 mismatch (I3), and the systematic cross-reference update implied by the renumbering (I6). I recommend a focused follow-up pass to rewrite the in-text cross-references using the §1.1 map; I can perform that pass on request.
+The mathematics is sound: every worked example checks out exactly, and the principal derivations (similarity transform, density-relaxation expansion, KL/Lyapunov expansion, KDE-noise and $\sqrt\pi$-weighting, pooling SNR and break-even, Prony bound, resampling unbiasedness) are correct. The statistical design is coherent and its main risk (destructive pooling interference, and its interaction with the run-axis bootstrap) is correctly identified and now carries explicit caveats. The outstanding items are reference/labeling consistency (I1–I7), the most consequential being the abstract's summation index (I1), the two-vs-three weight-type count (I2), the RevVAMPnet §15/§19 mismatch (I3), and the systematic cross-reference update implied by the renumbering (I6). Issues I1–I7 have since been resolved in the current document (see §6): the abstract summation index, the weight-type count, the RevVAMPnet label, and the wording items were corrected, and the in-text section-number cross-references were removed wholesale rather than remapped, which is why the §1.1 old→new map is retained here only as a historical record of the restructuring.
+
+
+---
+
+## 6. Revision log — alignment with the current document
+
+This section records the changes made after the initial reorganization so that the report matches the document as delivered. None removed technical content; paragraph splitting was verified to preserve non-whitespace content exactly.
+
+**Front matter and formatting.** The Table of Contents was moved to the very front (first content after the title block) at the author's request, and the stray thematic-break rules that produced the horizontal line and excess whitespace beneath the title were removed. The title is set to `\large` and the subtitle to `\normalsize`; the document body is set to `fontsize: 10pt`; and `titling` with `\setlength{\droptitle}{-3.5em}` pulls the title block upward to reduce the top whitespace. The YAML header — which an external formatter had repeatedly flattened (un-nesting `latex_engine`/`extra_dependencies` from under `pdf_document` and at one point duplicating `fontsize`, which silently dropped the `header-includes` block and caused a `\coloneqq` "undefined control sequence" failure) — was restored to correct nesting. Section 1 was retitled "Methodological Statement and Scope."
+
+**Cross-references (resolves I3, supersedes I6).** Every in-text cross-reference carrying a specific section number was removed from the prose; the figure's internal `\S` stage labels were retained. This moots the RevVAMPnet §15/§19 mismatch and replaces the remap-table approach of I6.
+
+**Corrections (I1, I2, I4, I7).** The abstract summation index was corrected to begin at $i\ge 2$; the two-vs-three weight-type wording was reconciled; the dangling $H$-theorem ("de Bruijn form in §2.7") reference was repaired; and the wording/typo items were fixed.
+
+**Expanded weighted-ensemble methodology (§4.1–§4.2).** The WESTPA stage was expanded to cover the actual WE algorithm and theory in more detail: the von Neumann splitting / Russian-roulette origins and the Huber–Kim binning refinement; the framing of WE as unbiased importance sampling in trajectory space; the bias-free-splitting / variance-bounded-merging decomposition and the variance-optimal allocation and recent mathematical-developments literature; and the steady-state (NESS, Hill-relation flux $\mathrm{MFPT}=1/J_{\mathrm{SS}}$) versus equilibrium (WEED) operating modes, with the pipeline's exclusive use of the equilibrium mode motivated by the coverage requirement. New citations were added accordingly (Huber–Kim, Zhang–Jasnow–Zuckerman, Suárez et al., Zwier et al., Russo et al., Bhatt–Zhang–Zuckerman, Aristoff–Zuckerman, Aristoff et al., Ryu et al., Zuckerman–Chong, Copperman–Zuckerman, and the RiteWeight references of Kania et al. and Otten et al.).
+
+**Symbol standardization.** Configuration space, previously written as both $\Omega$ and $\mathcal{X}$, is unified to $\Omega$ throughout (the feature set $\mathcal{F}$ is left untouched); the thermal energy is uniformly $k_B T$; and "Schmid-projected" is hyphenated consistently.
+
+**Readability and math display.** Twenty-nine long paragraphs were split at genuine sentence boundaries (abbreviations, decimals, and inline math protected), and the one extensive inline set-builder — the WE-corpus definition $\mathcal{C}=\{\dots\}$ — was promoted to display math.
+
+**Citations and reference list.** All citations were renumbered contiguously [1]–[25] in order of first appearance, and a numbered reference list was appended. Bibliographic details were drawn from the companion *Foundational Literature* guide; the block-/Bayesian-bootstrap classics (Künsch 1989; Liu & Singh 1992; Rubin 1981) are not in that guide and were supplied from their standard sources.
