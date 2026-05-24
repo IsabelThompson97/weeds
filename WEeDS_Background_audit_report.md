@@ -1,16 +1,16 @@
 ---
 output:
-  pdf_document:
-    keep_tex: true
-    latex_engine: lualatex
-    extra_dependencies: ["mathtools", "amsmath", "amssymb"]
+ pdf_document:
+ keep_tex: true
+ latex_engine: lualatex
+ extra_dependencies: ["mathtools", "amsmath", "amssymb"]
 monofont: "Menlo"
 ---
 
 # WEeDS Background — Reorganization & Verification Report
 
 **Subject document:** `WEeDS_Background_reorganized.md` (reorganized from `052326_WE_BidirectionalSeedingBackground.md`)
-**Scope of this report:** (1) what was reorganized and where content moved; (2) independent verification of every worked calculation and the principal derivations; (3) assessment of statistical validity; (4) a complete catalog of internal-consistency and cross-reference issues, with an old→new section map. No prose, equations, or notation in the manuscript were altered for *content* — only structure, ordering, headings, the Table of Contents, and an orientation note were changed. Substantive errors are reported here rather than silently patched, per the agreed workflow.
+**Scope of this report:** (1) what was reorganized and where content moved; (2) independent verification of every worked calculation and the principal derivations; (3) assessment of statistical validity; (4) a complete catalog of internal-consistency and cross-reference issues, with an old $\to$ new section map. No prose, equations, or notation in the manuscript were altered for *content* — only structure, ordering, headings, the Table of Contents, and an orientation note were changed. Substantive errors are reported here rather than silently patched, per the agreed workflow.
 
 ---
 
@@ -20,7 +20,7 @@ The source file was two concatenated documents that collided on section numberin
 
 The reorganization unifies these into one continuous document with the following moves.
 
-**Global ordering.** Restored the logical order Abstract → Program Statement → **Theoretical Foundations (§2)** → **Pipeline Architecture (§3)** → **WE Sampling (§4)**. In the source, §2 followed §3. The pipeline architecture figure was relocated to the head of §3 (it is the "Pipeline architecture" figure). The Table of Contents was rebuilt from scratch to match the actual contents (the original ToC referenced §§5–30 and mislabeled §7 as "Pipeline Integration" with §20.x subsection anchors).
+**Global ordering.** Restored the logical order Abstract $\to$ Program Statement $\to$ **Theoretical Foundations (§2)** $\to$ **Pipeline Architecture (§3)** $\to$ **WE Sampling (§4)**. In the source, §2 followed §3. The pipeline architecture figure was relocated to the head of §3 (it is the "Pipeline architecture" figure). The Table of Contents was rebuilt from scratch to match the actual contents (the original ToC referenced §§5–30 and mislabeled §7 as "Pipeline Integration" with §20.x subsection anchors).
 
 **The brief folded into Chapter 4.** Because the downstream pipeline owns chapter slots §5–§30 (tICA, RiteWeight, density-ratio, DMD, kEDMD, PCCA+, GP-FES, VAMPnet, validation — none of which are present in this file; they live in the companion Pipeline document), the seeding/pooling brief was folded into Chapter 4, its true thematic home (WE experimental design). This is collision-free and matches the brief's own integration intent.
 
@@ -30,7 +30,7 @@ The reorganization unifies these into one continuous document with the following
 |---|---|---|
 | §1.1 data structure restated | §3.1 / §4.3 | dropped (duplicate) |
 | §1.2 snapshot view | §2.6 | dropped (duplicate) |
-| §1.3 the −1 shift / orthogonality | §2.6a | dropped (duplicate; see issue I5) |
+| §1.3 the -1 shift / orthogonality | §2.6a | dropped (duplicate; see issue I5) |
 | §1.4 density-relaxation expansion | §2.6 | dropped (duplicate) |
 | §1.5 trajectory-pair view | §2.5 | dropped (duplicate) |
 | §1.6 VAMP-2 | §2.5 | dropped (duplicate) |
@@ -38,11 +38,11 @@ The reorganization unifies these into one continuous document with the following
 | §1.8 noise structure of density ratio | **§2.6b** (relocated, new home) | kept |
 | §1.9 amplitude/temporal/spatial decomposition | **§2.6.1** (relocated) | kept |
 
-**Editorial sections dissolved.** Brief §9 ("Suggested integration into the methods document") was consumed — its guidance is exactly the reorganization performed here — and removed. Brief §10 ("Loose ends and open questions") was removed *as a section*, but its five substantive open questions were preserved as clearly-marked `Caveat` notes folded into the relevant technical subsections (heterogeneous-coverage and bootstrap-interaction caveats → §4.14; bandwidth–pooling caveat → §4.12; higher-mode-cancellation and asymmetric-equilibrium caveats → §4.11). No information was lost; only the "loose ends" framing was removed.
+**Editorial sections dissolved.** Brief §9 ("Suggested integration into the methods document") was consumed — its guidance is exactly the reorganization performed here — and removed. Brief §10 ("Loose ends and open questions") was removed *as a section*, but its five substantive open questions were preserved as clearly-marked `Caveat` notes folded into the relevant technical subsections (heterogeneous-coverage and bootstrap-interaction caveats $\to$ §4.14; bandwidth–pooling caveat $\to$ §4.12; higher-mode-cancellation and asymmetric-equilibrium caveats $\to$ §4.11). No information was lost; only the "loose ends" framing was removed.
 
 **Subsection reordering inside §5 of the brief.** The brief's identifiability subsections appeared in file order 5.1, 5.2, **5.4, 5.3** (mis-numbered, though the *Condition 1–7* content flowed correctly). They are renumbered in reading order as §4.12.1–§4.12.4.
 
-### 1.1 Old → new section map
+### 1.1 Old $\to$ new section map
 
 Use this table to update any in-text cross-references (see issue I6).
 
@@ -56,15 +56,15 @@ Use this table to update any in-text cross-references (see issue I6).
 | §4.5 PC choice & bidirectional seeding | §4.6 |
 | §4.9 PC independence & limits | §4.7 |
 | §5.5 What WESTPA produces | §4.8 |
-| brief §2 Mode excitation | §4.9 (subs §2.1–2.6 → §4.9.1–4.9.6) |
+| brief §2 Mode excitation | §4.9 (subs §2.1–2.6 $\to$ §4.9.1–4.9.6) |
 | §4.6 Coverage vs crossings | §4.10 |
 | brief §3.3 asymmetric advance | §4.10.1 |
-| brief §4 Coverage–excitation tradeoff | §4.11 (subs §4.1–4.6 → §4.11.1–4.11.6) |
-| brief §5 Identifiability conditions | §4.12 (§5.1→4.12.1, §5.2→4.12.2, §5.4→4.12.3, §5.3→4.12.4) |
+| brief §4 Coverage–excitation tradeoff | §4.11 (subs §4.1–4.6 $\to$ §4.11.1–4.11.6) |
+| brief §5 Identifiability conditions | §4.12 (§5.1 $\to$ 4.12.1, §5.2 $\to$ 4.12.2, §5.4 $\to$ 4.12.3, §5.3 $\to$ 4.12.4) |
 | §4.5b Pooled-corpus architecture | §4.13 |
 | brief §6.1 / §6.2 | §4.13.1 / §4.13.2 (brief §6.3 dropped, duplicate) |
-| brief §7 Destructive interference | §4.14 (§7.1–7.6 → §4.14.1–4.14.6; §7.3.1–7.3.6 → §4.14.3.1–4.14.3.6) |
-| brief §8 Operational recommendations | §4.15 (§8.1–8.3 → §4.15.1–4.15.3) |
+| brief §7 Destructive interference | §4.14 (§7.1–7.6 $\to$ §4.14.1–4.14.6; §7.3.1–7.3.6 $\to$ §4.14.3.1–4.14.3.6) |
+| brief §8 Operational recommendations | §4.15 (§8.1–8.3 $\to$ §4.15.1–4.15.3) |
 | brief §9 Integration notes | removed (executed) |
 | brief §10 Loose ends | removed; caveats folded into §4.11, §4.12, §4.14 |
 
@@ -79,24 +79,24 @@ Every worked numerical example and the principal derivations were re-derived ind
 ### 2.1 Worked calculations (all verified exact)
 
 **§4.11.1 — asymmetric eigenfunction normalization** ($\pi_F=0.9,\ \pi_U=0.1$).
-From $\mathbb{E}_\pi[\psi_2]=\pi_F\psi_2^F+\pi_U\psi_2^U=0$, $\psi_2^U=-(\pi_F/\pi_U)\psi_2^F=-9\psi_2^F$ ✓. Normalization $\pi_F(\psi_2^F)^2+\pi_U(\psi_2^U)^2=0.9a^2+0.1\cdot81a^2=9a^2=1$ gives $|\psi_2^F|=1/3,\ |\psi_2^U|=3$ ✓.
+From $\mathbb{E}_\pi[\psi_2]=\pi_F\psi_2^F+\pi_U\psi_2^U=0$, $\psi_2^U=-(\pi_F/\pi_U)\psi_2^F=-9\psi_2^F$ $\checkmark$. Normalization $\pi_F(\psi_2^F)^2+\pi_U(\psi_2^U)^2=0.9a^2+0.1\cdot81a^2=9a^2=1$ gives $|\psi_2^F|=1/3,\ |\psi_2^U|=3$ $\checkmark$.
 
-**§4.11.2 — unidirectional excitation.** $c_2^{\text{uni-F}}=-1/3$, $c_2^{\text{uni-U}}=+3$, ratio $=9$ ✓.
+**§4.11.2 — unidirectional excitation.** $c_2^{\text{uni-F}}=-1/3$, $c_2^{\text{uni-U}}=+3$, ratio $=9$ $\checkmark$.
 
-**§4.11.3 — bidirectional identity.** $c_2^{\text{bidir}}(\alpha)=\alpha\psi_2^F+(1-\alpha)\psi_2^U=(\alpha-\pi_F)(\psi_2^F-\psi_2^U)$ verified algebraically (uses $1-\alpha-\pi_U=-(\alpha-\pi_F)$) ✓. $c_2^{\text{bidir}}(0.5)=(-0.4)(-10/3)=4/3\approx1.33$ ✓; vanishes iff $\alpha=\pi_F$ ✓.
+**§4.11.3 — bidirectional identity.** $c_2^{\text{bidir}}(\alpha)=\alpha\psi_2^F+(1-\alpha)\psi_2^U=(\alpha-\pi_F)(\psi_2^F-\psi_2^U)$ verified algebraically (uses $1-\alpha-\pi_U=-(\alpha-\pi_F)$) $\checkmark$. $c_2^{\text{bidir}}(0.5)=(-0.4)(-10/3)=4/3\approx1.33$ $\checkmark$; vanishes iff $\alpha=\pi_F$ $\checkmark$.
 
-**§4.11.4 — tradeoff ratios.** $|c_2^{\text{uni-U}}|/|c_2^{\text{bidir}}|=3/(4/3)=2.25$ ✓; $|c_2^{\text{bidir}}|/|c_2^{\text{uni-F}}|=(4/3)/(1/3)=4$ ✓.
+**§4.11.4 — tradeoff ratios.** $|c_2^{\text{uni-U}}|/|c_2^{\text{bidir}}|=3/(4/3)=2.25$ $\checkmark$; $|c_2^{\text{bidir}}|/|c_2^{\text{uni-F}}|=(4/3)/(1/3)=4$ $\checkmark$.
 
-**§4.14.2 — destructive case** ($\pi_F=\pi_U=0.5$, $\psi_2^F=-1,\psi_2^U=+1$). Norm $0.5+0.5=1$ ✓; $c_2^{(A)}=-0.6$, $c_2^{(B)}=+0.6$, equal-weight pool $=0$ ✓. Partial case $(-0.6,+0.4)\to-0.1$, a sixfold reduction ✓.
+**§4.14.2 — destructive case** ($\pi_F=\pi_U=0.5$, $\psi_2^F=-1,\psi_2^U=+1$). Norm $0.5+0.5=1$ $\checkmark$; $c_2^{(A)}=-0.6$, $c_2^{(B)}=+0.6$, equal-weight pool $=0$ $\checkmark$. Partial case $(-0.6,+0.4)\to-0.1$, a sixfold reduction $\checkmark$.
 
-**§4.14.3.4–5 — break-even & worked example.** Three-run $(-0.6,+0.6,-0.6)/3=-0.2$, $\eta_2=0.2/0.6=1/3<1/\sqrt3\approx0.577$ → net-negative ✓. Partial $\eta_2=0.1/0.6=1/6<1/\sqrt2\approx0.707$ → net-negative ✓. Thresholds $1/\sqrt N$: $N=4\to0.5$, $9\to1/3$, $16\to1/4$ ✓.
+**§4.14.3.4–5 — break-even & worked example.** Three-run $(-0.6,+0.6,-0.6)/3=-0.2$, $\eta_2=0.2/0.6=1/3<1/\sqrt3\approx0.577$ $\to$ net-negative $\checkmark$. Partial $\eta_2=0.1/0.6=1/6<1/\sqrt2\approx0.707$ $\to$ net-negative $\checkmark$. Thresholds $1/\sqrt N$: $N=4\to0.5$, $9\to1/3$, $16\to1/4$ $\checkmark$.
 
 ### 2.2 Derivations checked (sound)
 
 - **Similarity transform** $(\mathcal P_\tau\rho)/\pi=\mathcal K_\tau(\rho/\pi)$ (§2.3): correct; follows directly from detailed balance $p_\tau(y\mid x)\pi(x)=p_\tau(x\mid y)\pi(y)$.
 - **Density-ratio recursion** $r(x,t+\tau)=(\mathcal K_\tau r(\cdot,t))(x)$ and expansion $r=\sum_{i\ge2}c_i\lambda_i^{t/\tau}\psi_i$ (§2.6): correct; the $-1$ shift removes $\psi_1\equiv1$ and yields $\langle r,1\rangle_\pi=0$.
 - **Implied timescales** $\lambda_i(\tau)=e^{-\tau/\tau_i}$ from the semigroup/Chapman–Kolmogorov functional equation (§2.3): correct.
-- **KL as Lyapunov function** (§2.6a): $D_{\mathrm{KL}}(p\Vert\pi)\approx\tfrac12\|r\|_{L^2(\pi)}^2=\tfrac12\sum_{i\ge2}c_i^2\lambda_i^{2t/\tau}$, and $\ln|\lambda_2|=\lim_k\frac1{2k}\ln D_{\mathrm{KL}}(t_k)$: second-order expansion verified numerically (ratio $D_{\mathrm{KL}}/\tfrac12\|r\|^2\to0.9997$) ✓. The asymptotic-slope identity is correct.
+- **KL as Lyapunov function** (§2.6a): $D_{\mathrm{KL}}(p\Vert\pi)\approx\tfrac12\|r\|_{L^2(\pi)}^2=\tfrac12\sum_{i\ge2}c_i^2\lambda_i^{2t/\tau}$, and $\ln|\lambda_2|=\lim_k\frac1{2k}\ln D_{\mathrm{KL}}(t_k)$: second-order expansion verified numerically (ratio $D_{\mathrm{KL}}/\tfrac12\|r\|^2\to0.9997$) $\checkmark$. The asymptotic-slope identity is correct.
 - **KDE noise / $\sqrt\pi$-weighting** (§2.6b): $\mathrm{Var}[\eta]\sim f/(n_{\mathrm{eff}}h^d)$ is standard kernel-density form; $\mathrm{SD}[\hat{\mathbf R}]\approx\sigma_{\mathrm{noise}}/\hat\pi$ and the $\sqrt{\hat\pi}$-weighting reducing it to $\sigma_{\mathrm{noise}}/\sqrt{\hat\pi}$ are algebraically correct, and the geometric reading as the change of measure to $L^2(\pi)$ is sound.
 - **Pooling noise** $\sigma^{\mathrm{pool}}\sim\sigma^{(\text{single})}/\sqrt{N_{\mathrm{runs}}}$ and $\mathrm{SNR}\propto|c_i^{\mathrm{pool}}|\sqrt{N_{\mathrm{runs}}}$ (§4.14.3): correct for independent runs of comparable size. The break-even $\sqrt{N_{\mathrm{runs}}}\,\eta_i>1$ follows directly.
 - **Prony bound** $N\ge2(n-1)$ to identify $n-1$ exponential modes (§4.12.1): correct in spirit — $2M$ samples to fit $M$ damped exponentials; the rank-$(n-1)$ factorization argument is the right justification.
@@ -124,7 +124,7 @@ No statistical claim was found to be invalid. The principal statistical *risk* t
 
 ## 4. Internal-consistency and cross-reference issues
 
-> **Revision status (this pass).** All items in this section have since been addressed in `WEeDS_Background_reorganized.md`: the abstract summation index was corrected to $\sum_{i\ge2}$ (I1); the two-vs-three weight-type count was reconciled (I2); the dangling $H$-theorem reference was repaired (I4); the wording/typos were fixed (I7); and **every in-text cross-reference carrying a specific section number was removed from the prose** (figure `\S` labels retained), which also moots the RevVAMPnet §15/§19 mismatch (I3) and supersedes the remap-table approach of (I6). The brief's introductory roadmap, inadvertently dropped in the first merge, was restored as a lead-in to the Chapter 4 seeding/pooling analysis. The descriptions below are retained as a record of what was found.
+> **Revision status (this pass).** All items in this section have since been addressed in `WEeDS_Background_reorganized.md`: the abstract summation index was corrected to $\sum_{i\ge2}$ (I1); the two-vs-three weight-type count was reconciled (I2); the dangling $H$-theorem reference was repaired (I4); the wording/typos were fixed (I7); and **every in-text cross-reference carrying a specific section number was removed from the prose** (figure `\S` labels retained), which also moots the RevVAMPnet §15/§19 mismatch (I3) and supersedes the remap-table approach of (I6). The brief's introductory roadmap, inadvertently dropped in the first merge, was restored as a lead-in to the Chapter 4 seeding/pooling analysis. The descriptions below are retained as a record of what was found.
 
 
 
@@ -143,9 +143,9 @@ $p(x,t_k)/\pi(x)-1=\sum_{i\ge 1}c_i\lambda_i^{t_k/\tau_{\mathrm{WE}}}\psi_i(x)$ 
 
 **I6 — In-text cross-references to renumbered sections (action required).** Section *headings* were fully renumbered, but in-text cross-references were **not** mechanically rewritten, because the brief's reference tokens are overloaded against the companion pipeline's numbering and cannot be disambiguated automatically without risking corruption. Specifically:
 
-- `§1.8` (×4) should now read **§2.6b** (unambiguous — there is no other §1.8).
-- `§7.x` tokens are overloaded: inside the former brief they mean the destructive-interference material (now **§4.14.x**, e.g. former §7.3.4 → §4.14.3.4), but `§7`/`§7.1`/`§7.2` also legitimately reference the companion *density-ratio* stage. Each occurrence must be read in context.
-- `§4.5` (×5) is overloaded: it means either the former Doc-A §4.5 (seeding, now **§4.6**) or the former brief §4.5 (now **§4.11.5**).
+- `§1.8` (x4) should now read **§2.6b** (unambiguous — there is no other §1.8).
+- `§7.x` tokens are overloaded: inside the former brief they mean the destructive-interference material (now **§4.14.x**, e.g. former §7.3.4 $\to$ §4.14.3.4), but `§7`/`§7.1`/`§7.2` also legitimately reference the companion *density-ratio* stage. Each occurrence must be read in context.
+- `§4.5` (x5) is overloaded: it means either the former Doc-A §4.5 (seeding, now **§4.6**) or the former brief §4.5 (now **§4.11.5**).
 - `§6` is overloaded: brief-internal pooling (now **§4.13**) vs companion RiteWeight.
 - bare `§2`, `§3`, `§5.x` similarly: brief-internal (now §4.9 / §4.10 / §4.12.x) vs theory/architecture/companion.
 
@@ -153,11 +153,11 @@ Use the map in §1.1 above to update these. An orientation note was added after 
 
 **I7 — Minor wording/typos (pre-existing, not corrected).**
 
-- Abstract: *"we develop and approach"* → "we develop an approach."
-- Brief intro: *"splitting and merging probabilty weights"* → "probability."
+- Abstract: *"we develop and approach"* $\to$ "we develop an approach."
+- Brief intro: *"splitting and merging probabilty weights"* $\to$ "probability."
 - Figure caption: *"Section numbers refer to chapter each stage is derived"* is ungrammatical; suggest "Section numbers refer to the chapter in which each stage is derived."
 - §4.11.6: *"diverse bstates"* — "bstates" (WESTPA basis-state files) is used as jargon; fine internally, but define on first use for external readers.
-- §3.2 reads *"appear in the first half of pipeline"* → "of the pipeline."
+- §3.2 reads *"appear in the first half of pipeline"* $\to$ "of the pipeline."
 
 ---
 
