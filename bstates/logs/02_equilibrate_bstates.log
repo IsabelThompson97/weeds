@@ -1,0 +1,368 @@
+
+============================================================
+  AMBER Min/Eq Pipeline for WE Bstates (Array Jobs)
+  Sun May 24 07:41:28 AM EDT 2026
+============================================================
+
+  Setup dir:      ./01_bstate_setup
+  Output dir:     ./02_bstate_equilibration
+  Restraint mask: :1-14
+  Start step:     min1
+  Dry run:        false
+  Bstates:        70
+  Log:            /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/02_equilibrate_bstates.log
+
+============================================================
+  Phase 1: Preparing bstate directories
+============================================================
+
+  [1/70] folded_01...
+  [2/70] folded_02...
+  [3/70] folded_03...
+  [4/70] folded_04...
+  [5/70] folded_05...
+  [6/70] folded_06...
+  [7/70] folded_07...
+  [8/70] folded_08...
+  [9/70] folded_09...
+  [10/70] folded_10...
+  [11/70] intermediate_01...
+  [12/70] intermediate_02...
+  [13/70] intermediate_03...
+  [14/70] intermediate_04...
+  [15/70] intermediate_05...
+  [16/70] intermediate_06...
+  [17/70] intermediate_07...
+  [18/70] intermediate_08...
+  [19/70] intermediate_09...
+  [20/70] intermediate_10...
+  [21/70] intermediate_11...
+  [22/70] intermediate_12...
+  [23/70] intermediate_13...
+  [24/70] intermediate_14...
+  [25/70] intermediate_15...
+  [26/70] intermediate_16...
+  [27/70] intermediate_17...
+  [28/70] intermediate_18...
+  [29/70] intermediate_19...
+  [30/70] intermediate_20...
+  [31/70] intermediate_21...
+  [32/70] intermediate_22...
+  [33/70] intermediate_23...
+  [34/70] intermediate_24...
+  [35/70] intermediate_25...
+  [36/70] intermediate_26...
+  [37/70] intermediate_27...
+  [38/70] intermediate_28...
+  [39/70] intermediate_29...
+  [40/70] intermediate_30...
+  [41/70] intermediate_31...
+  [42/70] intermediate_32...
+  [43/70] intermediate_33...
+  [44/70] intermediate_34...
+  [45/70] intermediate_35...
+  [46/70] intermediate_36...
+  [47/70] intermediate_37...
+  [48/70] intermediate_38...
+  [49/70] intermediate_39...
+  [50/70] intermediate_40...
+  [51/70] intermediate_41...
+  [52/70] intermediate_42...
+  [53/70] intermediate_43...
+  [54/70] intermediate_44...
+  [55/70] intermediate_45...
+  [56/70] intermediate_46...
+  [57/70] intermediate_47...
+  [58/70] intermediate_48...
+  [59/70] intermediate_49...
+  [60/70] intermediate_50...
+  [61/70] unfolded_01...
+  [62/70] unfolded_02...
+  [63/70] unfolded_03...
+  [64/70] unfolded_04...
+  [65/70] unfolded_05...
+  [66/70] unfolded_06...
+  [67/70] unfolded_07...
+  [68/70] unfolded_08...
+  [69/70] unfolded_09...
+  [70/70] unfolded_10...
+
+  Prepared: 70 / 70
+
+  Mapping file: /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/bstate_map.txt
+  Logs:         /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/logs/
+
+============================================================
+  Phase 2: Submitting array jobs
+============================================================
+
+  min1 -> array job 953923 (70 tasks)
+  min2 -> array job 953924 (70 tasks)
+  md1 -> array job 953925 (70 tasks)
+  md2a -> array job 953926 (70 tasks)
+  md2b -> array job 953927 (70 tasks)
+  md2c -> array job 953928 (70 tasks)
+  md2d -> array job 953929 (70 tasks)
+  md2e -> array job 953930 (70 tasks)
+  md3 -> array job 953931 (70 tasks)
+  md4 -> array job 953932 (70 tasks)
+============================================================
+  Phase 3: Final structure extraction
+============================================================
+
+  Final structure dir: /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final
+  bstates.txt:         /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final/bstates.txt
+  Mapping log:         /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final/struct_mapping.log
+
+  --- bstates.txt ---
+0    1.42857142857142853e-02    StructureFiles/struct_0
+1    1.42857142857142853e-02    StructureFiles/struct_1
+2    1.42857142857142853e-02    StructureFiles/struct_2
+3    1.42857142857142853e-02    StructureFiles/struct_3
+4    1.42857142857142853e-02    StructureFiles/struct_4
+5    1.42857142857142853e-02    StructureFiles/struct_5
+6    1.42857142857142853e-02    StructureFiles/struct_6
+7    1.42857142857142853e-02    StructureFiles/struct_7
+8    1.42857142857142853e-02    StructureFiles/struct_8
+9    1.42857142857142853e-02    StructureFiles/struct_9
+10    1.42857142857142853e-02    StructureFiles/struct_10
+11    1.42857142857142853e-02    StructureFiles/struct_11
+12    1.42857142857142853e-02    StructureFiles/struct_12
+13    1.42857142857142853e-02    StructureFiles/struct_13
+14    1.42857142857142853e-02    StructureFiles/struct_14
+15    1.42857142857142853e-02    StructureFiles/struct_15
+16    1.42857142857142853e-02    StructureFiles/struct_16
+17    1.42857142857142853e-02    StructureFiles/struct_17
+18    1.42857142857142853e-02    StructureFiles/struct_18
+19    1.42857142857142853e-02    StructureFiles/struct_19
+20    1.42857142857142853e-02    StructureFiles/struct_20
+21    1.42857142857142853e-02    StructureFiles/struct_21
+22    1.42857142857142853e-02    StructureFiles/struct_22
+23    1.42857142857142853e-02    StructureFiles/struct_23
+24    1.42857142857142853e-02    StructureFiles/struct_24
+25    1.42857142857142853e-02    StructureFiles/struct_25
+26    1.42857142857142853e-02    StructureFiles/struct_26
+27    1.42857142857142853e-02    StructureFiles/struct_27
+28    1.42857142857142853e-02    StructureFiles/struct_28
+29    1.42857142857142853e-02    StructureFiles/struct_29
+30    1.42857142857142853e-02    StructureFiles/struct_30
+31    1.42857142857142853e-02    StructureFiles/struct_31
+32    1.42857142857142853e-02    StructureFiles/struct_32
+33    1.42857142857142853e-02    StructureFiles/struct_33
+34    1.42857142857142853e-02    StructureFiles/struct_34
+35    1.42857142857142853e-02    StructureFiles/struct_35
+36    1.42857142857142853e-02    StructureFiles/struct_36
+37    1.42857142857142853e-02    StructureFiles/struct_37
+38    1.42857142857142853e-02    StructureFiles/struct_38
+39    1.42857142857142853e-02    StructureFiles/struct_39
+40    1.42857142857142853e-02    StructureFiles/struct_40
+41    1.42857142857142853e-02    StructureFiles/struct_41
+42    1.42857142857142853e-02    StructureFiles/struct_42
+43    1.42857142857142853e-02    StructureFiles/struct_43
+44    1.42857142857142853e-02    StructureFiles/struct_44
+45    1.42857142857142853e-02    StructureFiles/struct_45
+46    1.42857142857142853e-02    StructureFiles/struct_46
+47    1.42857142857142853e-02    StructureFiles/struct_47
+48    1.42857142857142853e-02    StructureFiles/struct_48
+49    1.42857142857142853e-02    StructureFiles/struct_49
+50    1.42857142857142853e-02    StructureFiles/struct_50
+51    1.42857142857142853e-02    StructureFiles/struct_51
+52    1.42857142857142853e-02    StructureFiles/struct_52
+53    1.42857142857142853e-02    StructureFiles/struct_53
+54    1.42857142857142853e-02    StructureFiles/struct_54
+55    1.42857142857142853e-02    StructureFiles/struct_55
+56    1.42857142857142853e-02    StructureFiles/struct_56
+57    1.42857142857142853e-02    StructureFiles/struct_57
+58    1.42857142857142853e-02    StructureFiles/struct_58
+59    1.42857142857142853e-02    StructureFiles/struct_59
+60    1.42857142857142853e-02    StructureFiles/struct_60
+61    1.42857142857142853e-02    StructureFiles/struct_61
+62    1.42857142857142853e-02    StructureFiles/struct_62
+63    1.42857142857142853e-02    StructureFiles/struct_63
+64    1.42857142857142853e-02    StructureFiles/struct_64
+65    1.42857142857142853e-02    StructureFiles/struct_65
+66    1.42857142857142853e-02    StructureFiles/struct_66
+67    1.42857142857142853e-02    StructureFiles/struct_67
+68    1.42857142857142853e-02    StructureFiles/struct_68
+69    1.42857142857142853e-02    StructureFiles/struct_69
+
+  --- struct_mapping.log ---
+# =============================================================================
+# Bstate -> Structure Mapping
+# Generated: Sun May 24 07:41:55 AM EDT 2026
+#
+# This file records the correspondence between the original bstate IDs
+# (from 01_prep_all_bstates.sh) and the final struct_X directories used
+# by WESTPA. Each structure was extracted as the last frame of md4.
+#
+# Columns: struct_index  bstate_id  source_directory  equilibration_directory
+# =============================================================================
+struct_0    folded_01    ./01_bstate_setup/folded_01    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_01
+struct_1    folded_02    ./01_bstate_setup/folded_02    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_02
+struct_2    folded_03    ./01_bstate_setup/folded_03    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_03
+struct_3    folded_04    ./01_bstate_setup/folded_04    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_04
+struct_4    folded_05    ./01_bstate_setup/folded_05    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_05
+struct_5    folded_06    ./01_bstate_setup/folded_06    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_06
+struct_6    folded_07    ./01_bstate_setup/folded_07    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_07
+struct_7    folded_08    ./01_bstate_setup/folded_08    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_08
+struct_8    folded_09    ./01_bstate_setup/folded_09    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_09
+struct_9    folded_10    ./01_bstate_setup/folded_10    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/folded_10
+struct_10    intermediate_01    ./01_bstate_setup/intermediate_01    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_01
+struct_11    intermediate_02    ./01_bstate_setup/intermediate_02    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_02
+struct_12    intermediate_03    ./01_bstate_setup/intermediate_03    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_03
+struct_13    intermediate_04    ./01_bstate_setup/intermediate_04    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_04
+struct_14    intermediate_05    ./01_bstate_setup/intermediate_05    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_05
+struct_15    intermediate_06    ./01_bstate_setup/intermediate_06    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_06
+struct_16    intermediate_07    ./01_bstate_setup/intermediate_07    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_07
+struct_17    intermediate_08    ./01_bstate_setup/intermediate_08    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_08
+struct_18    intermediate_09    ./01_bstate_setup/intermediate_09    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_09
+struct_19    intermediate_10    ./01_bstate_setup/intermediate_10    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_10
+struct_20    intermediate_11    ./01_bstate_setup/intermediate_11    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_11
+struct_21    intermediate_12    ./01_bstate_setup/intermediate_12    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_12
+struct_22    intermediate_13    ./01_bstate_setup/intermediate_13    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_13
+struct_23    intermediate_14    ./01_bstate_setup/intermediate_14    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_14
+struct_24    intermediate_15    ./01_bstate_setup/intermediate_15    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_15
+struct_25    intermediate_16    ./01_bstate_setup/intermediate_16    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_16
+struct_26    intermediate_17    ./01_bstate_setup/intermediate_17    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_17
+struct_27    intermediate_18    ./01_bstate_setup/intermediate_18    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_18
+struct_28    intermediate_19    ./01_bstate_setup/intermediate_19    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_19
+struct_29    intermediate_20    ./01_bstate_setup/intermediate_20    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_20
+struct_30    intermediate_21    ./01_bstate_setup/intermediate_21    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_21
+struct_31    intermediate_22    ./01_bstate_setup/intermediate_22    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_22
+struct_32    intermediate_23    ./01_bstate_setup/intermediate_23    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_23
+struct_33    intermediate_24    ./01_bstate_setup/intermediate_24    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_24
+struct_34    intermediate_25    ./01_bstate_setup/intermediate_25    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_25
+struct_35    intermediate_26    ./01_bstate_setup/intermediate_26    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_26
+struct_36    intermediate_27    ./01_bstate_setup/intermediate_27    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_27
+struct_37    intermediate_28    ./01_bstate_setup/intermediate_28    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_28
+struct_38    intermediate_29    ./01_bstate_setup/intermediate_29    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_29
+struct_39    intermediate_30    ./01_bstate_setup/intermediate_30    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_30
+struct_40    intermediate_31    ./01_bstate_setup/intermediate_31    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_31
+struct_41    intermediate_32    ./01_bstate_setup/intermediate_32    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_32
+struct_42    intermediate_33    ./01_bstate_setup/intermediate_33    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_33
+struct_43    intermediate_34    ./01_bstate_setup/intermediate_34    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_34
+struct_44    intermediate_35    ./01_bstate_setup/intermediate_35    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_35
+struct_45    intermediate_36    ./01_bstate_setup/intermediate_36    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_36
+struct_46    intermediate_37    ./01_bstate_setup/intermediate_37    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_37
+struct_47    intermediate_38    ./01_bstate_setup/intermediate_38    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_38
+struct_48    intermediate_39    ./01_bstate_setup/intermediate_39    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_39
+struct_49    intermediate_40    ./01_bstate_setup/intermediate_40    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_40
+struct_50    intermediate_41    ./01_bstate_setup/intermediate_41    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_41
+struct_51    intermediate_42    ./01_bstate_setup/intermediate_42    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_42
+struct_52    intermediate_43    ./01_bstate_setup/intermediate_43    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_43
+struct_53    intermediate_44    ./01_bstate_setup/intermediate_44    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_44
+struct_54    intermediate_45    ./01_bstate_setup/intermediate_45    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_45
+struct_55    intermediate_46    ./01_bstate_setup/intermediate_46    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_46
+struct_56    intermediate_47    ./01_bstate_setup/intermediate_47    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_47
+struct_57    intermediate_48    ./01_bstate_setup/intermediate_48    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_48
+struct_58    intermediate_49    ./01_bstate_setup/intermediate_49    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_49
+struct_59    intermediate_50    ./01_bstate_setup/intermediate_50    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/intermediate_50
+struct_60    unfolded_01    ./01_bstate_setup/unfolded_01    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_01
+struct_61    unfolded_02    ./01_bstate_setup/unfolded_02    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_02
+struct_62    unfolded_03    ./01_bstate_setup/unfolded_03    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_03
+struct_63    unfolded_04    ./01_bstate_setup/unfolded_04    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_04
+struct_64    unfolded_05    ./01_bstate_setup/unfolded_05    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_05
+struct_65    unfolded_06    ./01_bstate_setup/unfolded_06    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_06
+struct_66    unfolded_07    ./01_bstate_setup/unfolded_07    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_07
+struct_67    unfolded_08    ./01_bstate_setup/unfolded_08    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_08
+struct_68    unfolded_09    ./01_bstate_setup/unfolded_09    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_09
+struct_69    unfolded_10    ./01_bstate_setup/unfolded_10    /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/unfolded_10
+
+  extract -> array job 953933 (70 tasks)
+
+
+########################################
+#            SUMMARY                   #
+########################################
+
+  Bstates:    70
+  Steps:      min1 min2 md1 md2a md2b md2c md2d md2e md3 md4 + extract
+  Array jobs: 11 (one per step, 70 tasks each)
+
+  Equilibration: /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/<BSTATE_ID>/
+  Final output:  /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final/struct_<X>/
+  Logs:          /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/logs/
+  bstates.txt:   /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final/bstates.txt
+
+  Bstate mapping (SGE_TASK_ID -> bstate -> struct index):
+    Task 1 -> folded_01            -> struct_0
+    Task 2 -> folded_02            -> struct_1
+    Task 3 -> folded_03            -> struct_2
+    Task 4 -> folded_04            -> struct_3
+    Task 5 -> folded_05            -> struct_4
+    Task 6 -> folded_06            -> struct_5
+    Task 7 -> folded_07            -> struct_6
+    Task 8 -> folded_08            -> struct_7
+    Task 9 -> folded_09            -> struct_8
+    Task 10 -> folded_10            -> struct_9
+    Task 11 -> intermediate_01      -> struct_10
+    Task 12 -> intermediate_02      -> struct_11
+    Task 13 -> intermediate_03      -> struct_12
+    Task 14 -> intermediate_04      -> struct_13
+    Task 15 -> intermediate_05      -> struct_14
+    Task 16 -> intermediate_06      -> struct_15
+    Task 17 -> intermediate_07      -> struct_16
+    Task 18 -> intermediate_08      -> struct_17
+    Task 19 -> intermediate_09      -> struct_18
+    Task 20 -> intermediate_10      -> struct_19
+    Task 21 -> intermediate_11      -> struct_20
+    Task 22 -> intermediate_12      -> struct_21
+    Task 23 -> intermediate_13      -> struct_22
+    Task 24 -> intermediate_14      -> struct_23
+    Task 25 -> intermediate_15      -> struct_24
+    Task 26 -> intermediate_16      -> struct_25
+    Task 27 -> intermediate_17      -> struct_26
+    Task 28 -> intermediate_18      -> struct_27
+    Task 29 -> intermediate_19      -> struct_28
+    Task 30 -> intermediate_20      -> struct_29
+    Task 31 -> intermediate_21      -> struct_30
+    Task 32 -> intermediate_22      -> struct_31
+    Task 33 -> intermediate_23      -> struct_32
+    Task 34 -> intermediate_24      -> struct_33
+    Task 35 -> intermediate_25      -> struct_34
+    Task 36 -> intermediate_26      -> struct_35
+    Task 37 -> intermediate_27      -> struct_36
+    Task 38 -> intermediate_28      -> struct_37
+    Task 39 -> intermediate_29      -> struct_38
+    Task 40 -> intermediate_30      -> struct_39
+    Task 41 -> intermediate_31      -> struct_40
+    Task 42 -> intermediate_32      -> struct_41
+    Task 43 -> intermediate_33      -> struct_42
+    Task 44 -> intermediate_34      -> struct_43
+    Task 45 -> intermediate_35      -> struct_44
+    Task 46 -> intermediate_36      -> struct_45
+    Task 47 -> intermediate_37      -> struct_46
+    Task 48 -> intermediate_38      -> struct_47
+    Task 49 -> intermediate_39      -> struct_48
+    Task 50 -> intermediate_40      -> struct_49
+    Task 51 -> intermediate_41      -> struct_50
+    Task 52 -> intermediate_42      -> struct_51
+    Task 53 -> intermediate_43      -> struct_52
+    Task 54 -> intermediate_44      -> struct_53
+    Task 55 -> intermediate_45      -> struct_54
+    Task 56 -> intermediate_46      -> struct_55
+    Task 57 -> intermediate_47      -> struct_56
+    Task 58 -> intermediate_48      -> struct_57
+    Task 59 -> intermediate_49      -> struct_58
+    Task 60 -> intermediate_50      -> struct_59
+    Task 61 -> unfolded_01          -> struct_60
+    Task 62 -> unfolded_02          -> struct_61
+    Task 63 -> unfolded_03          -> struct_62
+    Task 64 -> unfolded_04          -> struct_63
+    Task 65 -> unfolded_05          -> struct_64
+    Task 66 -> unfolded_06          -> struct_65
+    Task 67 -> unfolded_07          -> struct_66
+    Task 68 -> unfolded_08          -> struct_67
+    Task 69 -> unfolded_09          -> struct_68
+    Task 70 -> unfolded_10          -> struct_69
+
+  Monitor:    qstat -u ithomps3
+  Kill all:   qdel 953923 953933
+              (or: qdel $(qstat -u $(whoami) | grep eq_ | awk '{print $1}' | sort -u))
+
+  After completion, verify:
+    1. Each bstate has md4.rst:  ls /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/*/md4.rst
+    2. Final structures:         ls /groups/scorcell/ithomps3/weeds/bstates/03_bstates_final/StructureFiles/struct_*/struct.pdb
+    3. No errors in logs:        grep -l ERROR /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/logs/*.log
+    4. Min convergence:          grep 'FINAL RESULTS' /groups/scorcell/ithomps3/weeds/bstates/02_bstate_equilibration/*/min*.out
+

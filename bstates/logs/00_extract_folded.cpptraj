@@ -1,0 +1,25 @@
+parm /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_stripped.prmtop
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 226225 226225
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 307473 307473
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 316739 316739
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 346316 346316
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 434053 434053
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 456787 456787
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 488389 488389
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 870487 870487
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 972246 972246
+trajin /groups/scorcell/ithomps3/rnaHairpins_2KOC/2KOC_OL3_HRM/folded/stripped_trajectories/2KOCFolded_HRM_productionStripped.nc 977572 977572
+autoimage :1-14
+strip !:1-14
+outtraj 00_bstate_pdbs/folded/folded_01_frame226225.pdb onlyframes 1 pdb
+outtraj 00_bstate_pdbs/folded/folded_02_frame307473.pdb onlyframes 2 pdb
+outtraj 00_bstate_pdbs/folded/folded_03_frame316739.pdb onlyframes 3 pdb
+outtraj 00_bstate_pdbs/folded/folded_04_frame346316.pdb onlyframes 4 pdb
+outtraj 00_bstate_pdbs/folded/folded_05_frame434053.pdb onlyframes 5 pdb
+outtraj 00_bstate_pdbs/folded/folded_06_frame456787.pdb onlyframes 6 pdb
+outtraj 00_bstate_pdbs/folded/folded_07_frame488389.pdb onlyframes 7 pdb
+outtraj 00_bstate_pdbs/folded/folded_08_frame870487.pdb onlyframes 8 pdb
+outtraj 00_bstate_pdbs/folded/folded_09_frame972246.pdb onlyframes 9 pdb
+outtraj 00_bstate_pdbs/folded/folded_10_frame977572.pdb onlyframes 10 pdb
+run
+quit
