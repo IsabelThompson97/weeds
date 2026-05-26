@@ -31,6 +31,12 @@ Source trajectories
         |
         v
 [02] Extract final frames             →  03_bstates_final/ (struct_X/, bstates.txt)
+        |
+        v
+[04] Analyze progress coordinates     →  04_analyze/  (pcoord table, figures,
+        |                                              seed-set recommendations)
+        v
+   recommended bstate subsets for the next WE run(s)
 ```
 
 ---
@@ -40,7 +46,7 @@ Source trajectories
 | Tool | Version | Notes |
 |------|---------|-------|
 | AMBER | 24.0 | `cpptraj`, `pmemd`, `pmemd.cuda`, `parmed`, `tleap` |
-| Python | 3.x | `h5py` required for Path B; standard library only for Path A |
+| Python | 3.x | `h5py` for Path B; `numpy` + `matplotlib` for Step 4 analysis (both ship with the AMBER miniconda) |
 | WESTPA | 2022.10 | Needed only if Path B reads a live simulation |
 | `solvate.sh` | — | Dan Roe's iterative solvation script; must be present as `./solvate.sh` |
 | SGE scheduler | — | Notre Dame CRC; `qsub`, `qstat`, `qdel` |
@@ -330,6 +336,70 @@ qdel $(qstat -u $USER | grep eq_ | awk '{print $1}' | sort -u)
 
 ---
 
+## Step 4 — Analyze basis-state progress coordinates and recommend seed sets
+
+**Scripts (run from the `bstates/` repo root):** `01_compute_raw_distances.sh`, then `02_analyze_bstate_pcoords.py`
+**Outputs:** `04_analyze/raw/` (per-bstate raw distances) and `04_analyze/results/` (table, figures, log, recommendations)
+
+> **Numbering note:** these analysis scripts reuse the `01_`/`02_` prefixes but are an independent *post-equilibration* stage — they consume `03_bstates_final/`, not `00_bstate_pdbs/`. Think of them as stage `04` (they write to `04_analyze/`), not as alternatives to `01_prep_all_bstates.sh` / `02_equilibrate_bstates.sh`.
+
+Once the final basis states exist, this stage measures every progress coordinate for each `struct_X`, characterizes how diverse the seed set is, and recommends concrete bstate subsets for the next WE run(s). The pcoord definitions mirror `04_analyze/raw/` cpptraj inputs (`1_we_pcoord_distances.in` / `get_pcoord.cpptraj`) and `compute_Q.1.py` so the bstate values sit on the same footing as the live WE simulation's pcoords.
+
+### Step 4a — Compute raw distances
+
+```bash
+module load amber
+bash 01_compute_raw_distances.sh
+```
+
+For each `03_bstates_final/StructureFiles/struct_X/`, this runs `cpptraj` against the 2KOC NMR reference (`04_analyze/raw/2KOCFolded_NMR.{prmtop,rst7}`) and writes, into `04_analyze/raw/struct_X/`:
+
+| File | Contents |
+|------|----------|
+| `pcoord_candidates.dat` | RMSD to NMR (global / stem / loop), G9 χ dihedral, Rg, end-to-end distance |
+| `loop_hbonds_raw.dat` | 6 UUCG tetraloop H-bond distances |
+| `stem_hbonds_raw.dat` | 14 Watson–Crick stem H-bond distances |
+| `mindist.dat` | G1–C14 native-contact minimum distance (WE pcoord dimension 2) |
+
+### Step 4b — Build the table, plots, and recommendations
+
+```bash
+python3 02_analyze_bstate_pcoords.py
+```
+
+This assembles a one-row-per-bstate table (RMSDs, MinDist, Q_stem/Q_loop via the `compute_Q.1.py` sigmoid + hard cutoffs, stem base-pair count, Rg, end-to-end, χ_G9), then assigns each bstate to a basin and selects seed subsets.
+
+**Selection is driven only by the measured progress coordinates, never by the `folded_*` / `intermediate_*` / `unfolded_*` directory names.** Basins come from k-means(2) in standardized pcoord space; the transition (barrier) set is defined as a partially-formed stem (`1 ≤ n_stem_bp ≤ 4`) held at an intermediate G1–C14 MinDist. Diverse subsets within each basin are chosen by farthest-point sampling, since within-basin spread is the lever on higher-mode excitation.
+
+**Recommended schemes** (grounded in `README` + `WEeDS_Background_reorganized.md` §4.6, §4.10, §4.11, §4.14, §4.15.1):
+
+- **A — bidirectional 50/50:** diverse folded-side + unfolded-side seeds (the default coverage run).
+- **B — bidirectional + transition seeds:** A plus partially-formed-stem seeds to sharpen ψ₂'s node and the barrier-region FES.
+- **C — unidirectional unfolded perturbation:** diverse far-from-π unfolded seeds; strengthens ψ₂ in the pooled corpus. Pool with A/B and check the break-even criterion η_i > 1/√N_runs.
+- **D — intermediate/barrier-only run:** analyzed, not blindly recommended — it sits on the ψ₂ node (c₂≈0), so it dilutes ψ₂ if pooled equal-weight, but is useful as a down-weighted higher-mode / barrier-resolution probe alongside a both-basins run. See the log for the full excitation-coefficient / pooling derivation.
+
+**Outputs (`04_analyze/results/`):**
+
+| File | Contents |
+|------|----------|
+| `bstate_pcoords.csv` / `.dat` | full pcoord table, one row per bstate, with data-driven basin and fold fraction |
+| `recommendations.csv` | recommended `struct_X` sets per scheme (with role, basin, fold fraction) |
+| `analysis.log` | summary statistics, label-vs-pcoord cross-tab, seed-cloud diversity, and the scheme recommendations with their mathematical grounding |
+| `fig_pcoord_RMSD_MinDist.png` | the WE 2D pcoord space, colored by data-driven basin |
+| `fig_Qstem_Qloop.png` | native-contact space (loop stays formed while stem melts) |
+| `fig_pcoord_distributions.png` | per-coordinate histograms across all bstates |
+| `fig_recommended_seeds.png` | Scheme B seeds marked on the WE pcoord |
+| `fig_Rg_e2e.png` | global compaction, sized by stem base-pair count |
+
+**Verification:**
+```bash
+ls 04_analyze/results/bstate_pcoords.csv     # 70 data rows + header
+column -t -s, 04_analyze/results/recommendations.csv | head
+less 04_analyze/results/analysis.log
+```
+
+---
+
 ## Output directory tree (complete finished workflow)
 
 ```
@@ -445,6 +515,31 @@ prep_bstates/
     ├── struct_1/
     │   └── ...
     └── ... (one directory per bstate, 0-indexed)
+│
+├── 01_compute_raw_distances.sh           # Step 4a: per-bstate cpptraj driver
+├── 02_analyze_bstate_pcoords.py          # Step 4b: table + figures + recommendations
+└── 04_analyze/                           # Step 4: progress-coordinate analysis
+    ├── raw/                              # Step 4a output
+    │   ├── 2KOCFolded_NMR.prmtop         # folded-state RMSD reference
+    │   ├── 2KOCFolded_NMR.rst7
+    │   ├── struct_0/
+    │   │   ├── get_pcoord.cpptraj        # generated cpptraj input
+    │   │   ├── pcoord_candidates.dat     # RMSDs, chi_G9, Rg, end-to-end
+    │   │   ├── loop_hbonds_raw.dat       # 6 loop H-bond distances
+    │   │   ├── stem_hbonds_raw.dat       # 14 stem H-bond distances
+    │   │   ├── mindist.dat               # G1–C14 native-contact MinDist
+    │   │   └── cpptraj.log
+    │   └── ... (one directory per bstate)
+    └── results/                          # Step 4b output
+        ├── bstate_pcoords.csv            # full pcoord table (+ basin, fold_frac)
+        ├── bstate_pcoords.dat            # same table, whitespace-aligned
+        ├── recommendations.csv           # recommended struct sets per scheme
+        ├── analysis.log                  # stats, diversity, recommendations
+        ├── fig_pcoord_RMSD_MinDist.png
+        ├── fig_Qstem_Qloop.png
+        ├── fig_pcoord_distributions.png
+        ├── fig_recommended_seeds.png
+        └── fig_Rg_e2e.png
 ```
 
 ---
