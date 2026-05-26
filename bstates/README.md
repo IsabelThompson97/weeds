@@ -253,7 +253,7 @@ The HRM modifies Lennard-Jones parameters to correct overestimated stacking inte
 
 ## Step 2 — Minimize and equilibrate
 
-**Script:** `02_equilibrate_bstates.sh`
+**Script:** `02_03_equilibrate_extract_bstates.sh`
 
 Runs a 10-step AMBER minimization and equilibration protocol on all bstates in parallel using SGE array jobs. Each step is one array job; each bstate is one array task. Steps are chained with `-hold_jid` so they execute sequentially but all bstates within a step run simultaneously.
 
@@ -300,7 +300,7 @@ Only names listed here will be processed. Names must match directory names under
 
 **Run:**
 ```bash
-bash 02_equilibrate_bstates.sh
+bash 02_03_equilibrate_extract_bstates.sh
 ```
 
 > Run this on a login node — it only submits jobs, does not run MD itself. The script generates all AMBER `.in` files and SGE scripts locally, then calls `qsub` once per step.
@@ -309,7 +309,7 @@ bash 02_equilibrate_bstates.sh
 
 ```bash
 # In the script, set DRY_RUN="true", then:
-bash 02_equilibrate_bstates.sh
+bash 02_03_equilibrate_extract_bstates.sh
 # Inspect generated scripts in 02_bstate_equilibration/run_*.sh
 # When satisfied, set DRY_RUN="false" and re-run
 ```
@@ -338,10 +338,8 @@ qdel $(qstat -u $USER | grep eq_ | awk '{print $1}' | sort -u)
 
 ## Step 4 — Analyze basis-state progress coordinates and recommend seed sets
 
-**Scripts (run from the `bstates/` repo root):** `01_compute_raw_distances.sh`, then `02_analyze_bstate_pcoords.py`
+**Scripts (run from the `bstates/` repo root):** `04_compute_raw_distances.sh`, then `04_analyze_bstate_pcoords.py`
 **Outputs:** `04_analyze/raw/` (per-bstate raw distances) and `04_analyze/results/` (table, figures, log, recommendations)
-
-> **Numbering note:** these analysis scripts reuse the `01_`/`02_` prefixes but are an independent *post-equilibration* stage — they consume `03_bstates_final/`, not `00_bstate_pdbs/`. Think of them as stage `04` (they write to `04_analyze/`), not as alternatives to `01_prep_all_bstates.sh` / `02_equilibrate_bstates.sh`.
 
 Once the final basis states exist, this stage measures every progress coordinate for each `struct_X`, characterizes how diverse the seed set is, and recommends concrete bstate subsets for the next WE run(s). The pcoord definitions mirror `04_analyze/raw/` cpptraj inputs (`1_we_pcoord_distances.in` / `get_pcoord.cpptraj`) and `compute_Q.1.py` so the bstate values sit on the same footing as the live WE simulation's pcoords.
 
@@ -349,7 +347,7 @@ Once the final basis states exist, this stage measures every progress coordinate
 
 ```bash
 module load amber
-bash 01_compute_raw_distances.sh
+bash 04_compute_raw_distances.sh
 ```
 
 For each `03_bstates_final/StructureFiles/struct_X/`, this runs `cpptraj` against the 2KOC NMR reference (`04_analyze/raw/2KOCFolded_NMR.{prmtop,rst7}`) and writes, into `04_analyze/raw/struct_X/`:
@@ -364,7 +362,7 @@ For each `03_bstates_final/StructureFiles/struct_X/`, this runs `cpptraj` agains
 ### Step 4b — Build the table, plots, and recommendations
 
 ```bash
-python3 02_analyze_bstate_pcoords.py
+python3 04_analyze_bstate_pcoords.py
 ```
 
 This assembles a one-row-per-bstate table (RMSDs, MinDist, Q_stem/Q_loop via the `compute_Q.1.py` sigmoid + hard cutoffs, stem base-pair count, Rg, end-to-end, χ_G9), then assigns each bstate to a basin and selects seed subsets.
@@ -516,8 +514,8 @@ prep_bstates/
     │   └── ...
     └── ... (one directory per bstate, 0-indexed)
 │
-├── 01_compute_raw_distances.sh           # Step 4a: per-bstate cpptraj driver
-├── 02_analyze_bstate_pcoords.py          # Step 4b: table + figures + recommendations
+├── 04_compute_raw_distances.sh           # Step 4a: per-bstate cpptraj driver
+├── 04_analyze_bstate_pcoords.py          # Step 4b: table + figures + recommendations
 └── 04_analyze/                           # Step 4: progress-coordinate analysis
     ├── raw/                              # Step 4a output
     │   ├── 2KOCFolded_NMR.prmtop         # folded-state RMSD reference
@@ -577,7 +575,7 @@ for d in 01_bstate_setup/*/; do
 done
 ```
 
-**After step 2 (`02_equilibrate_bstates.sh`):**
+**After step 2 (`02_03_equilibrate_extract_bstates.sh`):**
 ```bash
 # Check md4 completed for all bstates:
 ls 02_bstate_equilibration/*/md4.rst | wc -l   # should equal N bstates
@@ -595,6 +593,22 @@ grep "FINAL RESULTS" 02_bstate_equilibration/*/min1.out | wc -l
 cat 03_bstates_final/bstates.txt
 ```
 
+**After step 4 (`04_compute_raw_distances.sh` + `04_analyze_bstate_pcoords.py`):**
+```bash
+# One raw mindist file per bstate (should equal N bstates):
+ls 04_analyze/raw/struct_*/mindist.dat | wc -l
+
+# No cpptraj failures:
+grep -l "Error" 04_analyze/raw/struct_*/cpptraj.log
+
+# Table has a row per bstate (N + 1 with header) and all results exist:
+wc -l 04_analyze/results/bstate_pcoords.csv
+ls 04_analyze/results/*.png 04_analyze/results/*.csv 04_analyze/results/analysis.log
+
+# Sanity-check the extremes: folded ~ low RMSD/MinDist, unfolded ~ high:
+column -t -s, 04_analyze/results/bstate_pcoords.csv | head
+```
+
 ---
 
 ## Using the final bstates in WESTPA
@@ -609,6 +623,8 @@ west:
 ```
 
 Each `struct_X/` directory needs at minimum `struct.ncrst` (or `struct.rst`) and `struct.prmtop`. The `runseg.sh` script for your simulation should be written to read these files by those names, consistent with how other bstates in the `Example2D_RMSDMinDist` template are structured.
+
+To seed a *subset* of these bstates (e.g. a bidirectional or perturbation run rather than all 70), use the Step 4 recommendations: `04_analyze/results/recommendations.csv` lists the chosen `struct_X` per scheme, and `04_analyze/results/analysis.log` explains the rationale. Build a `bstates.txt` from the selected `struct_X` rows, renormalizing the weights so they sum to 1.
 
 ---
 
