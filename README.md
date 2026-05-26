@@ -2,7 +2,10 @@
 
 A pipeline for estimating slow modes of RNA conformational dynamics by combining bidirectionally-seeded weighted ensemble (WE) simulations with a perturbation-mode dispersion strategy. Trajectory segments from many short WE runs are pooled, featurized at the walker start/end pair level, projected with tICA, and reweighted with RiteWeight to recover equilibrium spectral estimates.
 
-This repository holds everything from basis-state preparation through the WE simulation drivers that produce the segment corpus consumed by the downstream tICA + RiteWeight analysis. The full theoretical and methodological background is in `WEeDS_Background_reorganized.md` (and the rendered PDF alongside it).
+This repository holds everything from basis-state preparation through the WE simulation drivers that produce the segment corpus consumed by the downstream tICA + RiteWeight analysis. The full theoretical and methodological background is in `WEeDS.md` (and the rendered PDF alongside it).
+
+<img width="1040" height="780" alt="pdist_evolution" src="https://github.com/user-attachments/assets/ef789e61-17c0-47ea-8e2d-d89be7971708" />
+
 
 ---
 
