@@ -39,13 +39,13 @@ N_EXCESS_IONS=61            # Excess K+ and Cl- each (SLTCAP calculation for 150
 # Paths
 PDB_DIR="00_bstate_pdbs"
 OUT_DIR="01_bstate_setup"  # Output directory for solvated systems
-SOLVATE_SH="./solvate.sh"  # Path to Dan Roe's Solvate.sh
+SOLVATE_SH="./01_solvate.sh"  # Path to Dan Roe's Solvate.sh
 
 module load amber/24.0
 
 # ---- VERIFY SOLVATE.SH EXISTS ----
 if [ ! -f "${SOLVATE_SH}" ]; then
-    echo "Error: Solvate.sh not found at ${SOLVATE_SH}"
+    echo "Error: 01_solvate.sh not found at ${SOLVATE_SH}"
     echo "Download from: https://github.com/drroe/Solvate.sh"
     exit 1
 fi

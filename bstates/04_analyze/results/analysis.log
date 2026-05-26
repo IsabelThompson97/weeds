@@ -1,0 +1,236 @@
+==============================================================================
+BASIS-STATE PROGRESS-COORDINATE ANALYSIS  —  UUCG hairpin (2KOC), 14 nt
+==============================================================================
+Basis states analysed : 70
+Reference structure   : 2KOCFolded_NMR (folded native)
+WE 2D progress coord  : (RMSD-to-NMR, G1-C14 native-contact MinDist)
+Pcoord defs follow 1_we_pcoord_distances.in / get_pcoord.cpptraj;
+Q-values follow compute_Q.1.py (sigmoid + 3.5/3.7 A hard cutoffs).
+
+SELECTION POLICY: recommendations use ONLY measured pcoords. Basins are
+assigned by k-means(2) + a continuous folded<->unfolded margin in
+standardized pcoord space. Directory labels are shown for reference only.
+
+------------------------------------------------------------------------------
+DATA-DRIVEN BASIN ASSIGNMENT  (label-free; from pcoords only)
+------------------------------------------------------------------------------
+  basins  = k-means(2) on standardized basin features
+  transition = partly-formed stem (1<=nBP<=4) AND 3 < MinDist < 25 A
+  folded_side   :  32   unfolded_side :  17   transition :  21
+
+  Cross-tab  (rows = original label, cols = pcoord basin):
+                    folded_side   transition  unfolded_side
+    folded                   10            0              0
+    intermediate             22           21              7
+    unfolded                  0            0             10
+
+  => Many 'intermediate'-labelled seeds are pcoord-folded or pcoord-unfolded;
+     they broaden the folded / unfolded seed clouds exactly as intended,
+     and only the genuinely in-between ones form the transition band.
+
+------------------------------------------------------------------------------
+SUMMARY STATISTICS  (mean +/- std  [min, max])  by data-driven basin
+------------------------------------------------------------------------------
+  rmsd_global    ALL             4.419 +/-   4.312  [  1.050,  14.915]
+                 folded_side      1.520 +/-   0.284  [  1.050,   2.107]
+                 transition       2.926 +/-   1.000  [  1.519,   6.533]
+                 unfolded_side   11.718 +/-   1.828  [  8.790,  14.915]
+
+  rmsd_stem      ALL             4.466 +/-   4.448  [  0.968,  14.612]
+                 folded_side      1.317 +/-   0.241  [  0.968,   2.044]
+                 transition       3.152 +/-   1.191  [  1.422,   7.455]
+                 unfolded_side   12.016 +/-   1.342  [  9.705,  14.612]
+
+  mindist        ALL            11.267 +/-  12.080  [  1.634,  41.861]
+                 folded_side      1.861 +/-   0.111  [  1.634,   2.262]
+                 transition       9.521 +/-   3.933  [  3.563,  22.038]
+                 unfolded_side   31.130 +/-   4.110  [ 23.973,  41.861]
+
+  Q_stem_sig     ALL             0.510 +/-   0.280  [  0.000,   0.772]
+                 folded_side      0.733 +/-   0.053  [  0.570,   0.772]
+                 transition       0.538 +/-   0.090  [  0.235,   0.594]
+                 unfolded_side    0.057 +/-   0.089  [  0.000,   0.226]
+
+  Q_loop_sig     ALL             0.662 +/-   0.252  [  0.003,   0.828]
+                 folded_side      0.772 +/-   0.039  [  0.613,   0.828]
+                 transition       0.745 +/-   0.077  [  0.515,   0.821]
+                 unfolded_side    0.355 +/-   0.356  [  0.003,   0.823]
+
+  n_stem_bp      ALL             3.386 +/-   1.900  [  0.000,   5.000]
+                 folded_side      4.875 +/-   0.331  [  4.000,   5.000]
+                 transition       3.619 +/-   0.722  [  1.000,   4.000]
+                 unfolded_side    0.294 +/-   0.456  [  0.000,   1.000]
+
+  rog            ALL            10.868 +/-   1.578  [  9.478,  14.752]
+                 folded_side      9.879 +/-   0.187  [  9.526,  10.419]
+                 transition      10.253 +/-   0.591  [  9.478,  12.535]
+                 unfolded_side   13.491 +/-   0.750  [ 11.752,  14.752]
+
+  d_e2e          ALL            19.382 +/-  12.622  [  5.461,  46.362]
+                 folded_side      9.421 +/-   1.233  [  5.461,  10.194]
+                 transition      18.085 +/-   5.462  [  6.141,  26.059]
+                 unfolded_side   39.736 +/-   3.629  [ 31.345,  46.362]
+
+------------------------------------------------------------------------------
+SEED-CLOUD DIVERSITY  (mean pairwise dist in standardized pcoord space)
+------------------------------------------------------------------------------
+  Higher = more diverse. S4.11.6: within-basin spread is what excites the
+  higher modes psi_3, psi_4; clustered seeds project poorly onto them.
+    folded_side   : 0.415   (n=32)
+    transition    : 1.103   (n=21)
+    unfolded_side : 2.724   (n=17)
+
+==============================================================================
+RECOMMENDATIONS  (all subsets chosen by farthest-point sampling on pcoords)
+==============================================================================
+
+Grounding (README.md + WEeDS_Background_reorganized.md S4.6, S4.10, S4.11, S4.14, S4.15.1):
+
+ * Bidirectional 50/50 seeding is the DEFAULT. RiteWeight corrects the
+   non-equilibrium basin populations downstream, so the FES is invariant to the
+   seeding ratio provided every basin is seeded (S4.6).
+ * The binding constraint is COVERAGE of supp(pi), not observed crossings
+   (S4.10). Coverage failure = identifiability failure (a mode is unrecoverable
+   on the uncovered region); excitation loss = wider CIs only (S4.11.4).
+ * Within-basin DIVERSITY is the lever on higher modes (S4.11.6) -> FPS spread.
+ * Unidirectional UNFOLDED (rare-basin) seeding maximally excites psi_2 because
+   |psi_2| is concentrated in the rare basin (S4.11.1-2). A folded-side
+   unidirectional run partially CANCELS psi_2 in the pool (S4.14) -> avoid.
+
+------------------------------------------------------------------------------
+SCHEME A — Bidirectional 50/50 coverage run (default)
+------------------------------------------------------------------------------
+  8 folded-side + 8 unfolded-side seeds, diverse within each basin.
+
+  folded-side seeds  (n=8)
+    structs : [4, 11, 35, 50, 26, 21, 48, 29]
+    bstates : ['folded_05', 'intermediate_02', 'intermediate_26', 'intermediate_41', 'intermediate_17', 'intermediate_12', 'intermediate_39', 'intermediate_20']
+    labels  : ['folded', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate']
+    fold_fr : [0.92, 0.89, 0.91, 0.89, 0.93, 0.91, 0.89, 0.91]
+    spread  : 0.679
+
+  unfolded-side seeds  (n=8)
+    structs : [64, 52, 60, 65, 59, 63, 58, 62]
+    bstates : ['unfolded_05', 'intermediate_43', 'unfolded_01', 'unfolded_06', 'intermediate_50', 'unfolded_04', 'intermediate_49', 'unfolded_03']
+    labels  : ['unfolded', 'intermediate', 'unfolded', 'unfolded', 'intermediate', 'unfolded', 'intermediate', 'unfolded']
+    fold_fr : [0.13, 0.17, 0.19, 0.17, 0.12, 0.13, 0.13, 0.08]
+    spread  : 2.944
+
+------------------------------------------------------------------------------
+SCHEME B — Bidirectional + transition-region seeds
+------------------------------------------------------------------------------
+  Scheme A plus partially-formed-stem seeds spanning the barrier; sharpens
+  psi_2's node and the FES along the pathway (S4.10.1, S4.15.1 cat. iii).
+
+  folded-side seeds  (n=8)
+    structs : [4, 11, 35, 50, 26, 21, 48, 29]
+    bstates : ['folded_05', 'intermediate_02', 'intermediate_26', 'intermediate_41', 'intermediate_17', 'intermediate_12', 'intermediate_39', 'intermediate_20']
+    labels  : ['folded', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate']
+    fold_fr : [0.92, 0.89, 0.91, 0.89, 0.93, 0.91, 0.89, 0.91]
+    spread  : 0.679
+
+  unfolded-side seeds  (n=8)
+    structs : [64, 52, 60, 65, 59, 63, 58, 62]
+    bstates : ['unfolded_05', 'intermediate_43', 'unfolded_01', 'unfolded_06', 'intermediate_50', 'unfolded_04', 'intermediate_49', 'unfolded_03']
+    labels  : ['unfolded', 'intermediate', 'unfolded', 'unfolded', 'intermediate', 'unfolded', 'intermediate', 'unfolded']
+    fold_fr : [0.13, 0.17, 0.19, 0.17, 0.12, 0.13, 0.13, 0.08]
+    spread  : 2.944
+
+  transition seeds  (n=6)
+    structs : [38, 53, 54, 12, 44, 24]
+    bstates : ['intermediate_29', 'intermediate_44', 'intermediate_45', 'intermediate_03', 'intermediate_35', 'intermediate_15']
+    labels  : ['intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate']
+    fold_fr : [0.88, 0.37, 0.81, 0.89, 0.75, 0.89]
+    spread  : 1.907
+
+------------------------------------------------------------------------------
+SCHEME C — Unidirectional UNFOLDED perturbation run (Strategy B, S4.9.6)
+------------------------------------------------------------------------------
+  Diverse far-from-pi unfolded seeds. Strengthens psi_2 in the pool via the
+  asymmetric-equilibrium mechanism; pool WITH A/B and check break-even.
+
+  unfolded perturbation seeds  (n=10)
+    structs : [64, 53, 59, 60, 65, 51, 58, 63, 56, 62]
+    bstates : ['unfolded_05', 'intermediate_44', 'intermediate_50', 'unfolded_01', 'unfolded_06', 'intermediate_42', 'intermediate_49', 'unfolded_04', 'intermediate_47', 'unfolded_03']
+    labels  : ['unfolded', 'intermediate', 'intermediate', 'unfolded', 'unfolded', 'intermediate', 'intermediate', 'unfolded', 'intermediate', 'unfolded']
+    fold_fr : [0.13, 0.37, 0.12, 0.19, 0.17, 0.24, 0.13, 0.13, 0.12, 0.08]
+    spread  : 3.109
+
+==============================================================================
+SCHEME D — Intermediate / barrier-ONLY run: what it does mathematically
+==============================================================================
+
+Candidate seeds (transition band, FPS):
+    structs : [38, 53, 54, 12, 44, 24, 46, 31, 43, 30, 41, 37]
+    labels  : ['intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate', 'intermediate']
+    fold_fr : [0.88, 0.37, 0.81, 0.89, 0.75, 0.89, 0.75, 0.8, 0.93, 0.85, 0.81, 0.77]
+    spread  : 1.397
+
+For any slow mode i>=2 the run's excitation coefficient is (S4.9.2)
+        c_i^(r) = E_{p^(r)(.,0)}[psi_i]            (since E_pi[psi_i] = 0).
+psi_2 is the folded/unfolded contrast mode: it has a NODE (psi_2 ~ 0) in the
+transition region and large magnitude in the basins (|psi_2^U|=3, |psi_2^F|=1/3
+for pi_F=0.9; S4.11.1).
+
+(1) psi_2, standalone.  Seeds sitting on the node give E[psi_2] ~ 0, so
+    c_2^(int) ~ 0.  A barrier-only run is the WEAKEST possible exciter of the
+    dominant slow mode -- it never lights up psi_2's temporal decay, so lambda_2
+    is essentially unreadable from this run alone. (If the transition pool spans
+    near-folded to near-unfolded, its -psi_2 and +psi_2 seeds average toward 0:
+    same conclusion, by internal cancellation.)
+
+(2) Higher modes psi_3, psi_4, standalone.  These distinguish substructure /
+    pathways and have their large-magnitude regions and nodes INSIDE the
+    transition / within-basin structure (S4.11.6). A barrier-seeded distribution
+    can carry substantial c_3, c_4. The intermediate-only run is therefore a
+    psi_2-BLIND, higher-mode-TARGETED probe -- the run you would design to chase
+    psi_3/psi_4 that endpoint seeding excites poorly.
+
+(3) Coverage, standalone.  Barrier walkers populate pi-hat and p-hat at
+    transition reference points, cutting the 1/pi-hat noise blow-up there
+    (S4.14.3.2) and sharpening the SPATIAL resolution of psi_2's node and the FES
+    along the pathway (S4.10.1). This is eigenfunction-SHAPE quality, distinct
+    from the eigenvalue/amplitude signal in (1).
+
+POOLED WITH AN A/B RUN (linearity S4.14.1; break-even S4.14.3.4):
+    c_2^pool = a*c_2^(int) + (1-a)*c_2^(AB) ~ (1-a)*c_2^(AB).
+    Equal weight a=0.5, with c_2^(AB) ~ 1.33 (the S4.11.3 50/50 value) and
+    c_2^(int) ~ 0:   c_2^pool ~ 0.665,  eta_2 = |c_2^pool|/max_r|c_2^(r)| = 0.5.
+    Break-even for N=2 is 1/sqrt(2) ~ 0.707.  Since 0.5 < 0.707, equal-weight
+    pooling is NET-NEGATIVE for psi_2: you recover psi_2 BETTER from the A/B run
+    alone. The harm is DILUTION (adding zero-psi_2-signal mass), not sign
+    cancellation. (Numbers are the doc's pi_F=0.9 illustration; the qualitative
+    result -- c_2^int ~ 0, dilution, sub-break-even -- holds generally.)
+    Remedies: (a) DOWN-WEIGHT the intermediate run (small a) so it barely dilutes
+    c_2 while still giving barrier coverage + higher-mode signal; (b) keep it as a
+    SEPARATE corpus analysed for psi_3/psi_4; (c) only merge into the psi_2 pool
+    once N_runs is large enough that sqrt(N)*eta_2 > 1.
+
+POOLED WITH A PERTURBATION (uni-U) RUN INSTEAD:
+    uni-U has c_2 ~ +3 (SAME sign as A/B) and the intermediate run ~0, so there
+    is no psi_2 sign cancellation between them. BUT {uni-U + intermediate} ALONE
+    leaves the FOLDED basin uncovered -> identifiability failure on the folded
+    side (S4.11.2: coverage failure is unrecoverable, not merely noisy). So an
+    intermediate+perturbation pool is sound ONLY when folded coverage is supplied
+    by a third (A/B) run. The productive 3-run pool is:
+        { A/B bidirectional  (coverage of BOTH basins, c_2 ~ +1.33),
+          uni-U perturbation (c_2 ~ +3, same sign -> STRENGTHENS pooled c_2),
+          intermediate       (c_2 ~ 0, down-weighted: barrier coverage + psi_3/psi_4) }.
+    With same-sign c_2 from the first two, eta_2 stays high and rises with N_runs;
+    the intermediate run rides along for higher-mode + barrier benefit without
+    dragging psi_2 below break-even, provided it is not over-weighted.
+    For psi_3/psi_4 the intermediate run's sign is NOT guaranteed to match the
+    others, so check eta_3, eta_4 run-by-run after pooling (S4.15.3) before
+    trusting pooled higher-mode estimates.
+
+BOTTOM LINE: an intermediate-only run is scientifically interesting but is a
+HIGHER-MODE / BARRIER-RESOLUTION tool, NOT a psi_2 tool. Pool it down-weighted
+(or analyse it separately); never let it dilute the basin-seeded c_2 at equal
+weight; and always pair it with runs that cover BOTH basins so coverage -- the
+binding constraint (S4.10) -- is never lost.
+
+------------------------------------------------------------------------------
+DO NOT: add a unidirectional folded-side run (cancels psi_2, S4.14).
+NEXT  : vary the PC across runs (S4.6); after each new run re-pool and
+        re-check eta_2, eta_3, eta_4 against 1/sqrt(N_runs) (S4.15.3).
+------------------------------------------------------------------------------
