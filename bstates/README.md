@@ -375,19 +375,26 @@ This assembles a one-row-per-bstate table (RMSDs, MinDist, Q_stem/Q_loop via the
 - **B — bidirectional + transition seeds:** A plus partially-formed-stem seeds to sharpen ψ₂'s node and the barrier-region FES.
 - **C — unidirectional unfolded perturbation:** diverse far-from-π unfolded seeds; strengthens ψ₂ in the pooled corpus. Pool with A/B and check the break-even criterion η_i > 1/√N_runs.
 - **D — intermediate/barrier-only run:** analyzed, not blindly recommended — it sits on the ψ₂ node (c₂≈0), so it dilutes ψ₂ if pooled equal-weight, but is useful as a down-weighted higher-mode / barrier-resolution probe alongside a both-basins run. See the log for the full excitation-coefficient / pooling derivation.
+- **E — balanced barrier-spanning (≤15 seeds):** a compact both-basins run (4 folded + 4 unfolded + 5 transition). Uses *fewer* folded seeds because the folded basin saturates by k≈4 (see the diversity-saturation diagnostic), and selects transition seeds for proximity to the committor-0.5 barrier top **and** a genuinely opening terminus (MinDist > 6 Å), pushing past the folded-committed edge that B's pure-FPS transition seeds occupy. Caveat: the true committor-0.5 ensemble is not in the current 70 structures (see the committor-gap diagnostic) — closing that gap needs newly generated structures, not re-selection.
+
+**Diagnostics worth reading in the log/figures:** the folded basin is over-sampled but *redundant* (FPS subset spread falls as k grows → extra folded seeds are near-duplicates; pull more diverse folded substates, not more near-native frames), and there is a **committor gap** — the sampled "transition" band is overwhelmingly folded-committed (frayed termini), with the committor-0.5 barrier top unsampled.
 
 **Outputs (`04_analyze/results/`):**
 
 | File | Contents |
 |------|----------|
 | `bstate_pcoords.csv` / `.dat` | full pcoord table, one row per bstate, with data-driven basin and fold fraction |
-| `recommendations.csv` | recommended `struct_X` sets per scheme (with role, basin, fold fraction) |
-| `analysis.log` | summary statistics, label-vs-pcoord cross-tab, seed-cloud diversity, and the scheme recommendations with their mathematical grounding |
+| `recommendations.csv` | recommended `struct_X` sets per scheme (with role, basin, fold fraction); includes schemes A–E |
+| `analysis.log` | summary statistics, label-vs-pcoord cross-tab, seed-cloud diversity + the new diversity diagnostics, and the scheme recommendations (A–E) with their mathematical grounding |
 | `fig_pcoord_RMSD_MinDist.png` | the WE 2D pcoord space, colored by data-driven basin |
 | `fig_Qstem_Qloop.png` | native-contact space (loop stays formed while stem melts) |
 | `fig_pcoord_distributions.png` | per-coordinate histograms across all bstates |
-| `fig_recommended_seeds.png` | Scheme B seeds marked on the WE pcoord |
 | `fig_Rg_e2e.png` | global compaction, sized by stem base-pair count |
+| `fig_div_pca.png` | PCA of the 8-feature diversity space, colored by basin and by fold_frac |
+| `fig_div_saturation.png` | FPS marginal diversity gain + subset spread vs *k*, per basin (the "do I need more seeds?" curve) |
+| `fig_div_redundancy.png` | 70×70 pairwise-distance heatmap, ordered by basin then committor (redundancy blocks) |
+| `fig_committor_gap.png` | fold_frac bimodality and the empty barrier-top window |
+| `fig_scheme_{A,B,C,D,E}.png` | one figure per scheme: seeds on the WE pcoord **and** on the diversity PCA, with per-basin spreads |
 
 **Verification:**
 ```bash
@@ -395,6 +402,40 @@ ls 04_analyze/results/bstate_pcoords.csv     # 70 data rows + header
 column -t -s, 04_analyze/results/recommendations.csv | head
 less 04_analyze/results/analysis.log
 ```
+
+### Step 5 — Assemble a WESTPA bstate directory for a scheme
+
+`05_build_scheme_dir.py` turns a chosen seed set into a ready-to-use basis-state
+directory. It copies each selected `struct_X` out of `03_bstates_final/StructureFiles/`,
+**renames the copies sequentially from `struct_0`** (in the order given), and writes a
+re-indexed `bstates.txt` (uniform weight 1/N, canonical `StructureFiles/struct_i` path)
+plus a `struct_mapping.log` recording `new_index ← orig struct_X ← bstate_id`.
+
+```bash
+# explicit indices, in the order you want them renamed (Scheme E shown)
+python3 05_build_scheme_dir.py --name Scheme_E \
+    --structs 4 11 35 50 64 52 60 65 42 53 37 22 31
+
+# or pull the indices straight from the recommendations CSV
+python3 05_build_scheme_dir.py --name Scheme_E \
+    --from-csv 04_analyze/results/recommendations.csv --scheme E_balanced_barrier
+```
+
+Produces the canonical layout WESTPA reads (matching `03_bstates_final/`):
+
+```
+Scheme_E/
+    bstates.txt
+    struct_mapping.log
+    StructureFiles/
+        struct_0/   (copy of orig struct_4)
+        struct_1/   (copy of orig struct_11)
+        ...
+```
+
+Options: `--force` overwrites an existing directory; `--source DIR` changes the
+source bstates dir (default `03_bstates_final`). Use `--scheme` to filter when a
+`--from-csv` file holds several schemes.
 
 ---
 
@@ -531,13 +572,24 @@ prep_bstates/
     └── results/                          # Step 4b output
         ├── bstate_pcoords.csv            # full pcoord table (+ basin, fold_frac)
         ├── bstate_pcoords.dat            # same table, whitespace-aligned
-        ├── recommendations.csv           # recommended struct sets per scheme
-        ├── analysis.log                  # stats, diversity, recommendations
+        ├── recommendations.csv           # recommended struct sets per scheme (A–E)
+        ├── analysis.log                  # stats, diversity + diagnostics, recommendations
         ├── fig_pcoord_RMSD_MinDist.png
         ├── fig_Qstem_Qloop.png
         ├── fig_pcoord_distributions.png
-        ├── fig_recommended_seeds.png
-        └── fig_Rg_e2e.png
+        ├── fig_Rg_e2e.png
+        ├── fig_div_pca.png               # diversity-space PCA (basin + fold_frac)
+        ├── fig_div_saturation.png        # FPS diversity-saturation curves
+        ├── fig_div_redundancy.png        # pairwise-distance heatmap
+        ├── fig_committor_gap.png         # fold_frac bimodality + barrier gap
+        └── fig_scheme_{A,B,C,D,E}.png    # one figure per seeding scheme
+
+05_build_scheme_dir.py                    # Step 5: assemble a bstate dir for a scheme
+Scheme_E/                                 # example built by Step 5 (struct_0..12)
+├── bstates.txt                           # re-indexed, uniform weight 1/N
+├── struct_mapping.log                    # new_index ← orig struct_X ← bstate_id
+├── analysis_recommendations.txt          # provenance: why these seeds
+└── StructureFiles/struct_0 … struct_12/  # renamed copies of the selected seeds
 ```
 
 ---

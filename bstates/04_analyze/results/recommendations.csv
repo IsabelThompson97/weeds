@@ -59,3 +59,16 @@ D_intermediate_only,transition_seed,43,intermediate_34,intermediate,transition,0
 D_intermediate_only,transition_seed,30,intermediate_21,intermediate,transition,0.849
 D_intermediate_only,transition_seed,41,intermediate_32,intermediate,transition,0.808
 D_intermediate_only,transition_seed,37,intermediate_28,intermediate,transition,0.772
+E_balanced_barrier,folded_seed,4,folded_05,folded,folded_side,0.917
+E_balanced_barrier,folded_seed,11,intermediate_02,intermediate,folded_side,0.890
+E_balanced_barrier,folded_seed,35,intermediate_26,intermediate,folded_side,0.906
+E_balanced_barrier,folded_seed,50,intermediate_41,intermediate,folded_side,0.893
+E_balanced_barrier,unfolded_seed,64,unfolded_05,unfolded,unfolded_side,0.127
+E_balanced_barrier,unfolded_seed,52,intermediate_43,intermediate,unfolded_side,0.167
+E_balanced_barrier,unfolded_seed,60,unfolded_01,unfolded,unfolded_side,0.190
+E_balanced_barrier,unfolded_seed,65,unfolded_06,unfolded,unfolded_side,0.166
+E_balanced_barrier,transition_seed,42,intermediate_33,intermediate,transition,0.817
+E_balanced_barrier,transition_seed,53,intermediate_44,intermediate,transition,0.365
+E_balanced_barrier,transition_seed,37,intermediate_28,intermediate,transition,0.772
+E_balanced_barrier,transition_seed,22,intermediate_13,intermediate,transition,0.770
+E_balanced_barrier,transition_seed,31,intermediate_22,intermediate,transition,0.803
