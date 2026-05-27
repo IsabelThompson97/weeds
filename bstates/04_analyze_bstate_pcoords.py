@@ -69,6 +69,10 @@ BASIN_COLORS = {"folded_side": "#1b7837", "transition": "#762a83", "unfolded_sid
 BASIN_ORDER  = ["folded_side", "transition", "unfolded_side"]
 CAT_ORDER    = ["folded", "intermediate", "unfolded"]
 CAT_COLORS   = {"folded": "#1b7837", "intermediate": "#762a83", "unfolded": "#b35806"}
+# seed-role colors for the per-scheme figures (match the basin palette so a
+# folded-side seed is always green, etc.)
+ROLE_COLORS  = {"folded_seed": "#1b7837", "transition_seed": "#762a83",
+                "unfolded_seed": "#b35806"}
 
 
 # ---------------------------------------------------------------------------
@@ -188,6 +192,38 @@ def fps(Z, k):
         chosen.append(nxt)
         mind = np.minimum(mind, np.linalg.norm(Z - Z[nxt], axis=1))
     return chosen
+
+
+def fps_trace(Z, k):
+    """Like fps() but also returns, for each newly added point, its min distance
+    to the already-chosen set (the MARGINAL diversity gain). The first entry is
+    np.inf (the centroid-nearest seed). Used for the saturation diagnostic:
+    a flat tail means new seeds are near-duplicates of ones already chosen."""
+    n = Z.shape[0]
+    k = min(k, n)
+    if n == 0:
+        return [], []
+    start = int(np.argmin(np.linalg.norm(Z - Z.mean(0), axis=1)))
+    chosen, gains = [start], [np.inf]
+    mind = np.linalg.norm(Z - Z[start], axis=1)
+    while len(chosen) < k:
+        nxt = int(np.argmax(mind))
+        gains.append(float(mind[nxt]))
+        if nxt in chosen:
+            break
+        chosen.append(nxt)
+        mind = np.minimum(mind, np.linalg.norm(Z - Z[nxt], axis=1))
+    return chosen, gains
+
+
+def pca2(Z):
+    """First two principal coordinates of standardized rows Z (SVD), plus the
+    fraction of variance each captures. Pure-numpy to match the no-sklearn style
+    of the rest of the script."""
+    Zc = Z - Z.mean(0)
+    U, S, Vt = np.linalg.svd(Zc, full_matrices=False)
+    var = (S ** 2 / (S ** 2).sum())[:2]
+    return Zc @ Vt[:2].T, var
 
 
 def mean_pairwise_dist(Z):
@@ -345,6 +381,27 @@ def main():
     C_unfolded = select(unfolded_leaning, min(10, len(unfolded_leaning)))
     D_inter    = select(transition_pool, min(12, len(transition_pool)))
 
+    # ---- Scheme E: balanced, barrier-spanning, <=15 seeds ------------------
+    # Few-but-diverse folded (the folded basin saturates early; see the
+    # diversity-saturation diagnostic) + diverse unfolded + transition seeds
+    # chosen for proximity to the committor-0.5 barrier top AND a genuinely
+    # opening terminus (MinDist > MD_BARRIER), then FPS within that barrier core
+    # so the transition seeds also spread along the crossing coordinate. This
+    # deliberately pushes past the folded-committed edge that Scheme B's pure-FPS
+    # transition seeds land on.
+    NE_FOLD, NE_UNF, NE_TRANS = 4, 4, 5
+    MD_BARRIER = 6.0
+    E_folded   = select(folded_pool,   NE_FOLD)
+    E_unfolded = select(unfolded_pool, NE_UNF)
+    t_open     = [s for s in transition_pool if M["mindist"][pos_of[s]] > MD_BARRIER]
+    t_sorted   = sorted(t_open, key=lambda s: abs(fold_frac[pos_of[s]] - 0.5))
+    barrier_core = t_sorted[:max(2 * NE_TRANS, NE_TRANS)]
+    if barrier_core:
+        loc_bc  = [pos_of[s] for s in barrier_core]
+        E_trans = [barrier_core[j] for j in fps(Zd[loc_bc], NE_TRANS)]
+    else:
+        E_trans = select(transition_pool, NE_TRANS)
+
     # =======================================================================
     # FIGURES
     # =======================================================================
@@ -403,19 +460,6 @@ def main():
     fig.savefig(os.path.join(RESULTS, "fig_pcoord_distributions.png"), dpi=160)
     plt.close(fig)
 
-    # Fig 4: selected seeds for Scheme B marked on the WE pcoord
-    fig, ax = plt.subplots(figsize=(7.5, 5.8))
-    scatter_basin(ax, M["rmsd_global"], M["mindist"],
-                  highlight=A_folded + A_unfolded + B_trans)
-    ax.set_xlabel("RMSD to NMR folded (Å)")
-    ax.set_ylabel("G1–C14 native-contact min distance (Å)")
-    ax.set_title("Scheme B recommended seeds (red rings)\n"
-                 "diverse folded + unfolded + transition, chosen by farthest-point sampling")
-    ax.legend(title="pcoord basin")
-    fig.tight_layout()
-    fig.savefig(os.path.join(RESULTS, "fig_recommended_seeds.png"), dpi=160)
-    plt.close(fig)
-
     # Fig 5: Rg vs end-to-end, sized by n_stem_bp
     fig, ax = plt.subplots(figsize=(7, 5.5))
     for b in BASIN_ORDER:
@@ -429,6 +473,157 @@ def main():
     fig.tight_layout()
     fig.savefig(os.path.join(RESULTS, "fig_Rg_e2e.png"), dpi=160)
     plt.close(fig)
+
+    # -----------------------------------------------------------------------
+    # DIVERSITY DIAGNOSTIC FIGURES + ONE FIGURE PER SCHEME
+    # -----------------------------------------------------------------------
+    pca, pca_var = pca2(Zd)   # 2D view of the 8-feature diversity space
+
+    # Fig 6: PCA of the diversity space, by basin and by fold_frac
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.4))
+    ax = axes[0]
+    for b in BASIN_ORDER:
+        m = basin == b
+        ax.scatter(pca[m, 0], pca[m, 1], s=45, alpha=0.85, label=b,
+                   color=BASIN_COLORS[b], edgecolor="k", linewidth=0.3)
+    for i in range(n):
+        ax.annotate(str(sidxs[i]), (pca[i, 0], pca[i, 1]), fontsize=5,
+                    alpha=0.55, xytext=(2, 2), textcoords="offset points")
+    ax.set_xlabel(f"PC1 ({pca_var[0]*100:.0f}% var)")
+    ax.set_ylabel(f"PC2 ({pca_var[1]*100:.0f}% var)")
+    ax.set_title("Diversity space (8 standardized features), PCA\ncolored by data-driven basin")
+    ax.legend(title="pcoord basin", fontsize=8)
+    ax = axes[1]
+    sc = ax.scatter(pca[:, 0], pca[:, 1], c=fold_frac, s=45, cmap="coolwarm_r",
+                    edgecolor="k", linewidth=0.3, vmin=0, vmax=1)
+    ax.set_xlabel(f"PC1 ({pca_var[0]*100:.0f}% var)")
+    ax.set_ylabel(f"PC2 ({pca_var[1]*100:.0f}% var)")
+    ax.set_title("Same projection, colored by fold_frac\n(committor proxy: 1 folded, 0 unfolded)")
+    fig.colorbar(sc, ax=ax, label="fold_frac")
+    fig.tight_layout()
+    fig.savefig(os.path.join(RESULTS, "fig_div_pca.png"), dpi=160)
+    plt.close(fig)
+
+    # Fig 7: FPS diversity saturation per basin (the "do I need more seeds?" curve)
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.2))
+    for b in BASIN_ORDER:
+        p = [pos_of[s] for s in members(basin == b)]
+        kmax = min(15, len(p))
+        _, gains = fps_trace(Zd[p], kmax)
+        axes[0].plot(range(2, len(gains) + 1), gains[1:], "o-",
+                     color=BASIN_COLORS[b], label=f"{b} (n={len(p)})")
+        sp = [mean_pairwise_dist(Zd[p][fps(Zd[p], k)]) for k in range(2, kmax + 1)]
+        axes[1].plot(range(2, kmax + 1), sp, "o-",
+                     color=BASIN_COLORS[b], label=f"{b} (n={len(p)})")
+    for a in axes:
+        a.axvline(8, color="grey", ls=":", lw=1)
+        a.legend(fontsize=8)
+    axes[0].set_xlabel("seed number added (FPS order)")
+    axes[0].set_ylabel("min distance of the newly added seed")
+    axes[0].set_title("Marginal diversity gain per added seed\n(flat tail = adding near-duplicates)")
+    axes[1].set_xlabel("number of seeds k")
+    axes[1].set_ylabel("mean pairwise distance of FPS subset")
+    axes[1].set_title("Subset spread vs k\n(falls as redundant seeds dilute the set)")
+    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    fig.suptitle("Within-basin diversity saturation (standardized pcoord space)", y=0.99)
+    fig.savefig(os.path.join(RESULTS, "fig_div_saturation.png"), dpi=160)
+    plt.close(fig)
+
+    # Fig 8: pairwise-distance heatmap of all bstates (redundancy blocks)
+    order = []
+    for b in BASIN_ORDER:
+        idx = [i for i in range(n) if basin[i] == b]
+        idx.sort(key=lambda i: fold_frac[i])
+        order += idx
+    order = np.array(order)
+    Dmat = np.linalg.norm(Zd[order][:, None, :] - Zd[order][None, :, :], axis=2)
+    fig, ax = plt.subplots(figsize=(8.2, 7))
+    im = ax.imshow(Dmat, cmap="viridis", origin="upper")
+    bnd = np.cumsum([int((basin[order] == b).sum()) for b in BASIN_ORDER])
+    for x in bnd[:-1]:
+        ax.axhline(x - 0.5, color="w", lw=1.2)
+        ax.axvline(x - 0.5, color="w", lw=1.2)
+    ticks = [0] + list(bnd)
+    centers = [(ticks[i] + ticks[i + 1]) / 2 for i in range(3)]
+    ax.set_xticks(centers); ax.set_yticks(centers)
+    ax.set_xticklabels(BASIN_ORDER, fontsize=8)
+    ax.set_yticklabels(BASIN_ORDER, fontsize=8, rotation=90, va="center")
+    ax.set_title("Pairwise distance in diversity space\n(bstates ordered by basin then fold_frac)\n"
+                 "dark block = redundant cluster")
+    fig.colorbar(im, ax=ax, label="standardized Euclidean distance")
+    fig.tight_layout()
+    fig.savefig(os.path.join(RESULTS, "fig_div_redundancy.png"), dpi=160)
+    plt.close(fig)
+
+    # Fig 9: the committor gap (fold_frac bimodality + empty barrier window)
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.2))
+    ax = axes[0]
+    ax.hist(fold_frac, bins=np.linspace(0, 1, 26), color="#4575b4", edgecolor="k", alpha=0.85)
+    ax.axvspan(0.4, 0.7, color="red", alpha=0.12)
+    ax.set_xlabel("fold_frac (committor proxy)")
+    ax.set_ylabel("count")
+    ax.set_title("fold_frac is bimodal: a folded cloud and an unfolded cloud.\n"
+                 "Shaded 0.4-0.7 barrier-top window is nearly empty.")
+    ax = axes[1]
+    for b in BASIN_ORDER:
+        m = basin == b
+        ax.scatter(fold_frac[m], M["mindist"][m], s=45, alpha=0.85, label=b,
+                   color=BASIN_COLORS[b], edgecolor="k", linewidth=0.3)
+    ax.axvspan(0.4, 0.7, color="red", alpha=0.12)
+    ax.set_xlabel("fold_frac (committor proxy)")
+    ax.set_ylabel("G1–C14 MinDist (Å)")
+    ax.set_title("The sampled 'transition' band is mostly folded-committed\n"
+                 "(frayed termini); the committor-0.5 barrier top is unsampled")
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    fig.savefig(os.path.join(RESULTS, "fig_committor_gap.png"), dpi=160)
+    plt.close(fig)
+
+    # Figs 10-14: one per scheme (seeds on the WE pcoord AND on the diversity PCA)
+    def scheme_fig(tag, title, seed_roles):
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5.8))
+        for ax, usepca in zip(axes, [False, True]):
+            X = pca[:, 0] if usepca else M["rmsd_global"]
+            Y = pca[:, 1] if usepca else M["mindist"]
+            ax.scatter(X, Y, s=28, color="0.78", edgecolor="0.5",
+                       linewidth=0.2, zorder=1, label="all bstates")
+            for role, structs in seed_roles:
+                p = [pos_of[s] for s in structs]
+                ax.scatter(X[p], Y[p], s=130, color=ROLE_COLORS[role],
+                           edgecolor="k", linewidth=0.6, zorder=3,
+                           label=f"{role} (n={len(structs)})")
+                for s in structs:
+                    i = pos_of[s]
+                    ax.annotate(str(s), (X[i], Y[i]), fontsize=6, zorder=4,
+                                xytext=(3, 3), textcoords="offset points")
+            ax.legend(fontsize=8)
+            if usepca:
+                ax.set_xlabel(f"PC1 ({pca_var[0]*100:.0f}% var)")
+                ax.set_ylabel(f"PC2 ({pca_var[1]*100:.0f}% var)")
+                ax.set_title("Diversity space (PCA)")
+            else:
+                ax.set_xlabel("RMSD to NMR folded (Å)")
+                ax.set_ylabel("G1–C14 MinDist (Å)")
+                ax.set_title("WE 2D progress coordinate")
+        info = "  ".join(f"{r.split('_')[0]} spread={spread(s):.2f}"
+                         for r, s in seed_roles if len(s) >= 2)
+        fig.tight_layout(rect=[0, 0, 1, 0.90])
+        fig.suptitle(f"{title}\n{info}", y=0.995, fontsize=11)
+        fig.savefig(os.path.join(RESULTS, f"fig_scheme_{tag}.png"), dpi=160)
+        plt.close(fig)
+
+    scheme_fig("A", "Scheme A — bidirectional 50/50 coverage (default)",
+               [("folded_seed", A_folded), ("unfolded_seed", A_unfolded)])
+    scheme_fig("B", "Scheme B — bidirectional + transition seeds",
+               [("folded_seed", A_folded), ("unfolded_seed", A_unfolded),
+                ("transition_seed", B_trans)])
+    scheme_fig("C", "Scheme C — unidirectional unfolded perturbation",
+               [("unfolded_seed", C_unfolded)])
+    scheme_fig("D", "Scheme D — intermediate / barrier-only probe",
+               [("transition_seed", D_inter)])
+    scheme_fig("E", "Scheme E — balanced barrier-spanning (4 folded + 4 unfolded + 5 near-barrier)",
+               [("folded_seed", E_folded), ("unfolded_seed", E_unfolded),
+                ("transition_seed", E_trans)])
 
     # =======================================================================
     # recommendations CSV
@@ -447,6 +642,9 @@ def main():
         w("B_bidir+transition", "transition_seed", B_trans)
         w("C_unidirectional_unfolded", "unfolded_seed", C_unfolded)
         w("D_intermediate_only", "transition_seed", D_inter)
+        w("E_balanced_barrier", "folded_seed",     E_folded)
+        w("E_balanced_barrier", "unfolded_seed",   E_unfolded)
+        w("E_balanced_barrier", "transition_seed", E_trans)
 
     # =======================================================================
     # LOG
@@ -512,6 +710,25 @@ def main():
             pool = members(basin == b)
             print(f"    {b:<14s}: {spread(pool):.3f}   (n={len(pool)})")
         print()
+        print("  DIAGNOSTICS (see fig_div_pca / fig_div_saturation / fig_div_redundancy /")
+        print("  fig_committor_gap; figures use ONLY pcoords):")
+        # folded-basin redundancy: does the FPS subset spread fall as k grows?
+        fp = [pos_of[s] for s in folded_pool]
+        sp4  = mean_pairwise_dist(Zd[fp][fps(Zd[fp], min(4,  len(fp)))])
+        sp12 = mean_pairwise_dist(Zd[fp][fps(Zd[fp], min(12, len(fp)))])
+        print(f"    - folded basin is OVER-sampled but REDUNDANT: FPS subset spread FALLS")
+        print(f"      from {sp4:.3f} (k=4) to {sp12:.3f} (k=12) -> extra folded seeds are")
+        print(f"      near-duplicates. More diverse folded SUBSTATES help; more near-native")
+        print(f"      frames do not. Unfolded basin spread ({spread(unfolded_pool):.2f}) is the healthy one.")
+        # committor gap
+        ngap = int(((fold_frac >= 0.4) & (fold_frac <= 0.7)).sum())
+        nlow = int((fold_frac < 0.5).sum())
+        print(f"    - COMMITTOR GAP: only {ngap} of {n} bstates fall in the 0.4<=fold_frac<=0.7")
+        print(f"      barrier-top window, and only {nlow} sit below 0.5. The sampled")
+        print(f"      'transition' band is overwhelmingly folded-committed (frayed termini).")
+        print(f"      The true transition-state ensemble must be GENERATED (string / steered")
+        print(f"      MD / committor-selected frames), not re-selected from these 70.")
+        print()
 
         print("=" * 78)
         print("RECOMMENDATIONS  (all subsets chosen by farthest-point sampling on pcoords)")
@@ -566,6 +783,26 @@ Grounding (README.md + WEeDS_Background_reorganized.md S4.6, S4.10, S4.11, S4.14
         print("  asymmetric-equilibrium mechanism; pool WITH A/B and check break-even.")
         print()
         show("unfolded perturbation seeds", C_unfolded)
+
+        print("-" * 78)
+        print("SCHEME E — Balanced barrier-spanning run (<=15 seeds)")
+        print("-" * 78)
+        print("  A compact both-basins run that maximizes within-basin diversity with")
+        print("  FEWER folded seeds (the folded basin saturates by k~4; see the")
+        print("  diversity-saturation diagnostic and fig_div_saturation.png) and adds")
+        print("  transition seeds chosen for proximity to the committor-0.5 barrier top")
+        print(f"  AND a genuinely opening terminus (MinDist > {MD_BARRIER:.0f} A), then FPS-spread.")
+        print("  This pushes the transition seeds PAST the folded-committed edge that")
+        print("  Scheme B's pure-FPS transition seeds occupy. Both basins are covered, so")
+        print("  it is a valid standalone coverage run (S4.10) as well as a B alternative.")
+        print("  CAVEAT: even here the transition seeds top out near the folded-committed")
+        print("  edge plus the lone deep seed (struct 53) -- the true committor-0.5 barrier")
+        print("  ensemble is simply NOT in the current 70 structures (see committor-gap")
+        print("  diagnostic). Closing that gap needs NEW structures, not re-selection.")
+        print()
+        show("folded-side seeds",   E_folded)
+        show("unfolded-side seeds", E_unfolded)
+        show("near-barrier transition seeds", E_trans)
 
         # ---- the intermediate-only-run analysis ----
         print("=" * 78)
@@ -653,8 +890,10 @@ binding constraint (S4.10) -- is never lost.
           f"  unfolded_side={len(unfolded_pool)}")
     for p in ("bstate_pcoords.csv", "bstate_pcoords.dat", "recommendations.csv", "analysis.log"):
         print(f"  -> results/{p}")
-    print("  figs: fig_pcoord_RMSD_MinDist.png, fig_Qstem_Qloop.png,")
-    print("        fig_pcoord_distributions.png, fig_recommended_seeds.png, fig_Rg_e2e.png")
+    print("  pcoord figs : fig_pcoord_RMSD_MinDist, fig_Qstem_Qloop,")
+    print("                fig_pcoord_distributions, fig_Rg_e2e")
+    print("  diversity   : fig_div_pca, fig_div_saturation, fig_div_redundancy, fig_committor_gap")
+    print("  per scheme  : fig_scheme_A, fig_scheme_B, fig_scheme_C, fig_scheme_D, fig_scheme_E")
 
 
 if __name__ == "__main__":
