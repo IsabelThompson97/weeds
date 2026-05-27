@@ -1,0 +1,152 @@
+============================================================================
+BASIS-STATE DIVERSITY ANALYSIS & SEEDING-SCHEME RECOMMENDATIONS
+UUCG hairpin (2KOC), 14 nt  --  provenance note for the Scheme_E bstate set
+============================================================================
+
+This file is the written analysis that accompanied the construction of this
+Scheme_E basis-state directory. It is saved here for provenance: it records
+WHY these 13 seeds were chosen and what the diagnostics show. The quantitative
+backing lives in 04_analyze/results/ (analysis.log, recommendations.csv, and
+the fig_* figures, all produced by 04_analyze_bstate_pcoords.py).
+
+----------------------------------------------------------------------------
+WHAT WAS PRODUCED
+----------------------------------------------------------------------------
+The 04_ pipeline reads the per-bstate cpptraj pcoords, assigns basins from the
+pcoords alone (k-means(2) + a continuous folded<->unfolded margin; transition =
+partly-formed stem held at intermediate G1-C14 MinDist), selects diverse seed
+subsets by farthest-point sampling (FPS), and emits:
+
+  NEW DIVERSITY FIGURES
+    fig_div_pca.png         PCA of the 8-feature standardized diversity space,
+                            colored by basin and by fold_frac
+    fig_div_saturation.png  FPS marginal diversity gain + subset spread vs k,
+                            per basin -- the "do I need more seeds?" curve
+    fig_div_redundancy.png  70x70 pairwise-distance heatmap, ordered by basin
+                            then committor -- redundancy blocks
+    fig_committor_gap.png   fold_frac bimodality + the empty barrier window
+  ONE FIGURE PER SCHEME
+    fig_scheme_{A,B,C,D,E}.png  seeds on both the WE 2D pcoord and the
+                                diversity PCA, with per-basin spreads annotated
+
+FPS reproduces every logged selection exactly (Scheme A folded
+[4,11,35,50,26,21,48,29], A unfolded [64,52,60,65,59,63,58,62], B transition
+[38,53,54,12,44,24], C, D), so the schemes ARE the greedy-FPS subsets the log
+claims.
+
+----------------------------------------------------------------------------
+ARE THE RECOMMENDED SCHEMES "OPTIMAL"? Mostly yes, with honest caveats.
+----------------------------------------------------------------------------
+Two layers, judged separately:
+
+The selection algorithm (within a basin): near-optimal, not provably optimal.
+Maximizing the minimum pairwise distance of a k-subset is the k-center /
+max-min diversity problem -- NP-hard. Greedy FPS is the standard 2-approximation
+(Gonzalez 1985): worst case never more than 2x from optimal, and on smooth
+low-dimensional clouds like this it is effectively optimal. The criterion
+itself -- max-min spread in standardized pcoord space -- is the correct lever
+per S4.11.6 (within-basin spread excites psi_3/psi_4), so the objective is well
+chosen even if the solver is a heuristic.
+
+The scheme designs (which basins, what ratio): theoretically sound, but with
+free parameters that are conventions, not optima.
+  - N = 8 per basin is a round number, not an optimized count. The saturation
+    curves show 8 is already past diminishing returns on the folded side.
+  - Basin assignment uses k-means(2), which forces exactly two clusters and is
+    sensitive to feature scaling; it agrees with the labels well, so it is
+    defensible, but it is not a unique partition.
+  - The transition thresholds (1<=nBP<=4, 3<MinDist<25 A) are read off the
+    histograms by eye. Reasonable, but movable.
+None of this is wrong -- it is the difference between "optimal" and
+"well-justified by the theory with sensible defaults."
+
+----------------------------------------------------------------------------
+DO YOU NEED TO PULL MORE OR DIFFERENT STRUCTURES? Yes -- and which.
+----------------------------------------------------------------------------
+The three basins are wildly unequal in diversity:
+
+  basin           n     pool spread   marginal gain by seed 8
+  folded_side     32    0.415         0.29 (flat)
+  transition      21    1.103         ~0.66
+  unfolded_side   17    2.725         0.92 (still climbing)
+
+- The folded basin is OVER-sampled but REDUNDANT. 32 structures, lowest spread
+  by far, and the FPS subset spread FALLS as you add seeds (0.805 at k=4 ->
+  0.613 at k=12) -- the signature of adding near-duplicates. fig_div_redundancy
+  shows it as a uniform dark block. More folded structures from the same
+  sampling will NOT help. What you need are structurally DIFFERENT folded
+  substates -- varied loop / sugar-pucker conformations, alternative stem
+  registers, the G9-syn vs anti distinction -- not more near-native snapshots.
+  A higher-temperature or differently-restrained sampling of the folded well
+  would do more than 30 more frames from the current one.
+
+- The unfolded basin is the only well-covered one, and its marginal gain is
+  still high at seed 8 -- you could justify MORE unfolded seeds here.
+
+- The barrier is genuinely under-sampled (see next).
+
+So the answer is not "pull more" uniformly; it is REBALANCE: fewer (but more
+diverse) folded, keep/expand unfolded, and actively go get barrier structures
+you do not currently have.
+
+THE COMMITTOR GAP (the thing to flag hardest):
+fig_committor_gap shows fold_frac is sharply bimodal with an essentially EMPTY
+window from ~0.4 to ~0.7. Of the 21 "transition" structures, all but one sit at
+fold_frac 0.75-0.93 -- these are folded-committed states with frayed/opening
+termini, not true transition-state-ensemble members. Only struct 53
+(fold_frac 0.37) is on the unfolded-committed side, and there is NOTHING at the
+committor ~0.5 barrier top. Your "transition band" is really "folded basin
+edge." To resolve the actual barrier (sharpen psi_2's node and the FES saddle,
+S4.10.1) you must GENERATE near-committor-0.5 structures -- e.g. string /
+steered-MD or committor-selected frames from a pilot WE run -- because they are
+not in the current 70.
+
+----------------------------------------------------------------------------
+SHOULD YOU RUN SCHEME B?
+----------------------------------------------------------------------------
+Yes -- B over A as your first/primary run, with one expectation set. B = A's
+both-basins coverage (the binding constraint, S4.10) PLUS transition seeds, and
+adding the transition seeds is essentially free: it does not touch psi_2
+recovery (they sit near the node) while improving pi-hat/p-hat coverage and FES
+resolution along the pathway. There is no scenario where A beats B given you
+already have these structures prepped. Caveat from the committor gap: B's
+transition seeds are folded-edge structures, so B sharpens the folded-side
+APPROACH to the barrier well but will not illuminate the true saddle until you
+supply genuine barrier-top structures. Run B now; treat barrier-top sampling as
+the next acquisition target, not a reason to delay B.
+
+Do NOT add a unidirectional FOLDED run (cancels psi_2, S4.14). C
+(unidirectional unfolded) is worth running later and pooling with B, checking
+eta_2 > 1/sqrt(N_runs) before trusting the pooled estimate. D stays a separate,
+down-weighted higher-mode probe -- never equal-weight pooled into the psi_2
+corpus.
+
+----------------------------------------------------------------------------
+SCHEME E -- balanced, barrier-spanning, 13 seeds (THIS DIRECTORY)
+----------------------------------------------------------------------------
+Design: 4 FPS-diverse folded + 4 FPS-diverse unfolded + 5 transition selected
+for proximity to committor 0.5 AND a genuinely opening terminus (MinDist > 6 A),
+then FPS within that barrier-core for spread. That last filter matters --
+without it the picker grabbed struct 54 (MinDist 3.6 A, basically folded); with
+it the transition seeds span MinDist 7.4-22 A and fold_frac 0.37-0.82.
+
+  role            structs (orig)     fold_frac    notes
+  folded (4)      4, 11, 35, 50      0.89-0.92    FPS, spread 0.805 -- HIGHER
+                                                  than A's 8-seed 0.679, because
+                                                  dropping to 4 avoids the
+                                                  redundant tail
+  unfolded (4)    64, 52, 60, 65     0.13-0.19    FPS, spread 3.11
+  transition (5)  42, 53, 37, 22, 31 0.37-0.82    barrier-core, MinDist 7.4-22 A,
+                                                  spread 1.49
+
+E deliberately trades per-basin seed COUNT for balance and barrier coverage --
+using only 4 folded seeds is right because the folded saturation curve is flat
+past ~4. Honest limitation: even E's transition seeds top out around the
+folded-committed edge plus the lone struct 53, because the true committor-0.5
+barrier top is NOT in your structure set. E is the best barrier-spanning design
+AVAILABLE from the current 70; closing the committor gap requires generating new
+structures, not re-selecting existing ones.
+
+In this directory the 13 seeds are renamed sequentially: struct_0..struct_12.
+struct_mapping.log records each new index <- original struct_X <- bstate_id.
+============================================================================
